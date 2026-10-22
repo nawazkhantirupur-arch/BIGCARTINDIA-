@@ -1,6 +1,3 @@
- 
-
-Server · JS
 /**
  * BCI Express backend — real shared data + auth + wallet + payments.
  *
@@ -11,26 +8,26 @@ Server · JS
  * Deploy this once (Render/Railway/Fly.io/a VPS — see README.md), set the
  * environment variables it asks for, then paste its URL into the app.
  */
- 
+
 const express = require('express');
 const cors = require('cors');
 const crypto = require('crypto');
 const Razorpay = require('razorpay');
- 
+
 const { db, uid } = require('./db');
 const { signToken, hashPassword, checkPassword, requireAuth, requireAdmin } = require('./auth');
 const { round2, computeInvoice, sanitizeBreakdownForVendor, sanitizeOverheadsForVendor } = require('./calc');
 const { isPincode, stateForPincode } = require('./pincode');
- 
+
 const PORT = process.env.PORT || 3000;
 const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID;
 const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || '').split(',').map(function(s){ return s.trim(); }).filter(Boolean);
- 
+
 const razorpay = (RAZORPAY_KEY_ID && RAZORPAY_KEY_SECRET)
   ? new Razorpay({ key_id: RAZORPAY_KEY_ID, key_secret: RAZORPAY_KEY_SECRET })
   : null;
- 
+
 const app = express();
 app.use(express.json());
 app.use(cors({
@@ -39,7 +36,7 @@ app.use(cors({
     else callback(new Error('Origin not allowed: ' + origin));
   }
 }));
- 
+
 // basic per-IP rate limit
 const hits = {};
 app.use(function(req, res, next){
@@ -50,9 +47,9 @@ app.use(function(req, res, next){
   if(hits[ip].length > 120) return res.status(429).json({ error: 'Too many requests, slow down.' });
   next();
 });
- 
+
 function nowISO(){ return new Date().toISOString(); }
- 
+
 function publicUser(row){
   return {
     id: row.id, name: row.name, username: row.username, role: row.role,
@@ -92,7 +89,7 @@ function findCityInCourier(courierObj, name){
   const n = String(name).trim().toLowerCase();
   return courierObj.cities.find(function(c){ return c.city.toLowerCase()===n; }) || null;
 }
- 
+
 /**
  * Resolves a vendor's typed pickup/destination into a {city, zone} pair.
  * Priority: (1) exact named city in this courier's mapping — the most
@@ -104,14 +101,14 @@ function findCityInCourier(courierObj, name){
 function resolveLocation(courierObj, raw){
   const trimmed = String(raw||'').trim();
   if(!trimmed) return null;
- 
+
   const cityMatch = findCityInCourier(courierObj, trimmed);
   if(cityMatch) return { city: cityMatch.city, zone: cityMatch.zone, matchType: 'city' };
- 
+
   if(isPincode(trimmed)){
     const pinMatch = courierObj.cities.find(function(c){ return c.pin === trimmed; });
     if(pinMatch) return { city: pinMatch.city, zone: pinMatch.zone, matchType: 'city' };
- 
+
     const state = stateForPincode(trimmed);
     const zone = state ? courierObj.stateZoneMap[state] : null;
     if(state && zone){
@@ -120,47 +117,47 @@ function resolveLocation(courierObj, raw){
   }
   return null;
 }
- 
+
 function addNotification(forRole, title, message, meta){
   db.prepare(`INSERT INTO notifications (id, for_role, title, message, invoice_id, vendor_id, read, created_at)
               VALUES (?,?,?,?,?,?,0,?)`)
     .run(uid('ntf'), forRole, title, message, (meta && meta.invoiceId) || null, (meta && meta.vendorId) || null, nowISO());
 }
- 
+
 app.get('/health', function(req, res){ res.json({ ok: true }); });
- 
+
 /* ============================= AUTH ============================= */
- 
+
 app.post('/auth/signup', function(req, res){
   const name = String(req.body.name || '').trim();
   const username = String(req.body.username || '').trim().toLowerCase();
   const password = String(req.body.password || '');
   const requestedRole = req.body.role === 'admin' ? 'admin' : 'vendor';
   const vendorName = String(req.body.vendorName || '').trim();
- 
+
   if(!name) return res.status(400).json({ error: 'Enter your full name.' });
   if(!/^[a-z0-9._]{3,24}$/.test(username)) return res.status(400).json({ error: 'Username should be 3-24 characters: letters, numbers, dots.' });
   if(password.length < 4) return res.status(400).json({ error: 'Password must be at least 4 characters.' });
- 
+
   const existing = db.prepare('SELECT id FROM users WHERE username = ?').get(username);
   if(existing) return res.status(400).json({ error: 'That username is already taken.' });
- 
+
   const adminExists = db.prepare("SELECT COUNT(*) as n FROM users WHERE role='admin'").get().n > 0;
   let role = requestedRole;
   if(role === 'admin' && adminExists) return res.status(400).json({ error: 'An administrator already exists for this workspace — choose Vendor.' });
   if(role === 'vendor' && !vendorName) return res.status(400).json({ error: 'Enter a company / vendor name.' });
- 
+
   const user = {
     id: uid('u'), name: name, username: username, password_hash: hashPassword(password),
     role: role, vendor_name: role==='vendor' ? vendorName : null, wallet_balance: 0, created_at: nowISO()
   };
   db.prepare(`INSERT INTO users (id, name, username, password_hash, role, vendor_name, wallet_balance, created_at)
               VALUES (@id,@name,@username,@password_hash,@role,@vendor_name,@wallet_balance,@created_at)`).run(user);
- 
+
   const token = signToken(user);
   res.json({ token: token, user: publicUser({ ...user, vendor_name: user.vendor_name }) });
 });
- 
+
 app.post('/auth/login', function(req, res){
   const username = String(req.body.username || '').trim().toLowerCase();
   const password = String(req.body.password || '');
@@ -171,21 +168,21 @@ app.post('/auth/login', function(req, res){
   const token = signToken(row);
   res.json({ token: token, user: publicUser(row) });
 });
- 
+
 app.get('/auth/me', requireAuth, function(req, res){
   const row = db.prepare('SELECT * FROM users WHERE id = ?').get(req.userId);
   if(!row) return res.status(404).json({ error: 'Account not found.' });
   res.json({ user: publicUser(row) });
 });
- 
+
 /* ============================= COURIERS ============================= */
- 
+
 app.get('/couriers', requireAuth, function(req, res){
   const rows = db.prepare('SELECT * FROM couriers ORDER BY created_at ASC').all();
   const forVendor = req.userRole !== 'admin';
   res.json({ couriers: rows.map(function(r){ return courierRowToObj(r, forVendor); }) });
 });
- 
+
 app.post('/couriers', requireAuth, requireAdmin, function(req, res){
   const name = String(req.body.name || '').trim();
   if(!name) return res.status(400).json({ error: 'Enter a courier name.' });
@@ -202,14 +199,14 @@ app.post('/couriers', requireAuth, requireAdmin, function(req, res){
               VALUES (@id,@name,@zones_json,@matrix_json,@cities_json,@overheads_json,@state_zone_json,@created_at)`).run(row);
   res.json({ courier: courierRowToObj(row, false) });
 });
- 
+
 app.delete('/couriers/:id', requireAuth, requireAdmin, function(req, res){
   const used = db.prepare('SELECT COUNT(*) as n FROM invoices WHERE courier_id = ?').get(req.params.id).n;
   if(used > 0) return res.status(400).json({ error: 'Cannot remove — invoices reference this courier.' });
   db.prepare('DELETE FROM couriers WHERE id = ?').run(req.params.id);
   res.json({ ok: true });
 });
- 
+
 app.put('/couriers/:id/zones', requireAuth, requireAdmin, function(req, res){
   const zones = req.body.zones;
   const matrix = req.body.matrix;
@@ -219,7 +216,7 @@ app.put('/couriers/:id/zones', requireAuth, requireAdmin, function(req, res){
   if(result.changes === 0) return res.status(404).json({ error: 'Courier not found.' });
   res.json({ ok: true });
 });
- 
+
 app.put('/couriers/:id/rates', requireAuth, requireAdmin, function(req, res){
   const row = db.prepare('SELECT overheads_json FROM couriers WHERE id = ?').get(req.params.id);
   if(!row) return res.status(404).json({ error: 'Courier not found.' });
@@ -227,7 +224,7 @@ app.put('/couriers/:id/rates', requireAuth, requireAdmin, function(req, res){
   db.prepare('UPDATE couriers SET overheads_json = ? WHERE id = ?').run(JSON.stringify(overheads), req.params.id);
   res.json({ ok: true });
 });
- 
+
 app.put('/couriers/:id/state-zones', requireAuth, requireAdmin, function(req, res){
   const row = db.prepare('SELECT state_zone_json FROM couriers WHERE id = ?').get(req.params.id);
   if(!row) return res.status(404).json({ error: 'Courier not found.' });
@@ -236,7 +233,7 @@ app.put('/couriers/:id/state-zones', requireAuth, requireAdmin, function(req, re
   db.prepare('UPDATE couriers SET state_zone_json = ? WHERE id = ?').run(JSON.stringify(map), req.params.id);
   res.json({ ok: true });
 });
- 
+
 app.post('/couriers/:id/cities', requireAuth, requireAdmin, function(req, res){
   const row = db.prepare('SELECT cities_json FROM couriers WHERE id = ?').get(req.params.id);
   if(!row) return res.status(404).json({ error: 'Courier not found.' });
@@ -247,7 +244,7 @@ app.post('/couriers/:id/cities', requireAuth, requireAdmin, function(req, res){
   db.prepare('UPDATE couriers SET cities_json = ? WHERE id = ?').run(JSON.stringify(cities), req.params.id);
   res.json({ ok: true, cities: cities });
 });
- 
+
 app.put('/couriers/:id/cities/:idx', requireAuth, requireAdmin, function(req, res){
   const row = db.prepare('SELECT cities_json FROM couriers WHERE id = ?').get(req.params.id);
   if(!row) return res.status(404).json({ error: 'Courier not found.' });
@@ -258,7 +255,7 @@ app.put('/couriers/:id/cities/:idx', requireAuth, requireAdmin, function(req, re
   db.prepare('UPDATE couriers SET cities_json = ? WHERE id = ?').run(JSON.stringify(cities), req.params.id);
   res.json({ ok: true });
 });
- 
+
 app.delete('/couriers/:id/cities/:idx', requireAuth, requireAdmin, function(req, res){
   const row = db.prepare('SELECT cities_json FROM couriers WHERE id = ?').get(req.params.id);
   if(!row) return res.status(404).json({ error: 'Courier not found.' });
@@ -269,9 +266,9 @@ app.delete('/couriers/:id/cities/:idx', requireAuth, requireAdmin, function(req,
   db.prepare('UPDATE couriers SET cities_json = ? WHERE id = ?').run(JSON.stringify(cities), req.params.id);
   res.json({ ok: true });
 });
- 
+
 /* ============================= VENDORS (admin) ============================= */
- 
+
 app.post('/vendors/:id/reset-password', requireAuth, requireAdmin, function(req, res){
   const pw = String((req.body && req.body.password) || '');
   if(pw.length < 6) return res.status(400).json({ error: 'Password must be at least 6 characters.' });
@@ -279,7 +276,7 @@ app.post('/vendors/:id/reset-password', requireAuth, requireAdmin, function(req,
   if(!r.changes) return res.status(404).json({ error: 'Vendor not found.' });
   res.json({ ok: true });
 });
- 
+
 app.get('/vendors', requireAuth, requireAdmin, function(req, res){
   const vendors = db.prepare("SELECT * FROM users WHERE role='vendor' ORDER BY created_at ASC").all();
   const out = vendors.map(function(v){
@@ -291,9 +288,9 @@ app.get('/vendors', requireAuth, requireAdmin, function(req, res){
   });
   res.json({ vendors: out });
 });
- 
+
 /* ============================= INVOICES ============================= */
- 
+
 app.get('/invoices', requireAuth, function(req, res){
   const forVendor = req.userRole !== 'admin';
   let sql = 'SELECT * FROM invoices WHERE 1=1';
@@ -309,65 +306,65 @@ app.get('/invoices', requireAuth, function(req, res){
   const rows = db.prepare(sql).all(...args);
   res.json({ invoices: rows.map(function(r){ return invoiceRowToObj(r, forVendor); }) });
 });
- 
+
 app.get('/invoices/:id', requireAuth, function(req, res){
   const row = db.prepare('SELECT * FROM invoices WHERE id = ?').get(req.params.id);
   if(!row) return res.status(404).json({ error: 'Invoice not found.' });
   if(req.userRole !== 'admin' && row.vendor_id !== req.userId) return res.status(403).json({ error: 'Not your invoice.' });
   res.json({ invoice: invoiceRowToObj(row, req.userRole !== 'admin') });
 });
- 
+
 app.post('/invoices/preview', requireAuth, function(req, res){
   if(req.userRole !== 'vendor') return res.status(403).json({ error: 'Vendor accounts only.' });
   const b = req.body;
   const courierRow = db.prepare('SELECT * FROM couriers WHERE id = ?').get(b.courierId);
   if(!courierRow) return res.status(400).json({ error: 'Select a valid courier.' });
   const courier = courierRowToObj(courierRow, false);
- 
+
   const src = resolveLocation(courier, b.sourceCityName);
   const dst = resolveLocation(courier, b.destCityName);
   if(!src || !dst) return res.status(400).json({ error: 'Pickup and destination must be known cities — check City mapping.' });
   const actualWt = Number(b.actualWt);
   if(!actualWt || actualWt <= 0) return res.status(400).json({ error: 'Enter the shipment weight.' });
- 
+
   const type = b.type === 'B2C' ? 'B2C' : 'B2B';
   const codAmount = type === 'B2C' ? Number(b.codAmount || 0) : 0;
   const topay = type === 'B2C' ? !!b.topay : false;
- 
+
   const calc = computeInvoice(courier, {
     sourceZone: src.zone, destZone: dst.zone, actualWt: actualWt,
     dims: b.dims || null, isODA: !!b.isODA, isAppointment: !!b.isAppointment,
     carrierRisk: !!b.carrierRisk, declaredValue: Number(b.declaredValue || 0),
     codAmount: codAmount, topay: topay
   });
- 
+
   res.json({ sourceZone: src.zone, destZone: dst.zone, sourceMatch: src.matchType, destMatch: dst.matchType, breakdown: sanitizeBreakdownForVendor(calc) });
 });
- 
+
 app.post('/invoices', requireAuth, function(req, res){
   if(req.userRole !== 'vendor') return res.status(403).json({ error: 'Only vendor accounts can book shipments.' });
   const b = req.body;
   const courierRow = db.prepare('SELECT * FROM couriers WHERE id = ?').get(b.courierId);
   if(!courierRow) return res.status(400).json({ error: 'Select a valid courier.' });
   const courier = courierRowToObj(courierRow, false); // full overheads for authoritative calc
- 
+
   const src = resolveLocation(courier, b.sourceCityName);
   const dst = resolveLocation(courier, b.destCityName);
   if(!src || !dst) return res.status(400).json({ error: 'Pickup and destination must be known cities — check City mapping.' });
   const actualWt = Number(b.actualWt);
   if(!actualWt || actualWt <= 0) return res.status(400).json({ error: 'Enter the shipment weight.' });
- 
+
   const type = b.type === 'B2C' ? 'B2C' : 'B2B';
   const codAmount = type === 'B2C' ? Number(b.codAmount || 0) : 0;
   const topay = type === 'B2C' ? !!b.topay : false;
- 
+
   const calc = computeInvoice(courier, {
     sourceZone: src.zone, destZone: dst.zone, actualWt: actualWt,
     dims: b.dims || null, isODA: !!b.isODA, isAppointment: !!b.isAppointment,
     carrierRisk: !!b.carrierRisk, declaredValue: Number(b.declaredValue || 0),
     codAmount: codAmount, topay: topay
   });
- 
+
   const vendorRow = db.prepare('SELECT * FROM users WHERE id = ?').get(req.userId);
   if(calc.total > vendorRow.wallet_balance + 0.001){
     return res.status(400).json({
@@ -375,13 +372,13 @@ app.post('/invoices', requireAuth, function(req, res){
       shortfall: round2(calc.total - vendorRow.wallet_balance)
     });
   }
- 
+
   const year = new Date().getFullYear();
   const seq = db.prepare('SELECT COUNT(*) as n FROM invoices').get().n + 1;
   const invoiceNo = (type==='B2B'?'BCI-B2B-':'BCI-B2C-') + year + '-' + String(seq).padStart(5,'0');
   const invId = uid('inv');
   const newBalance = round2(vendorRow.wallet_balance - calc.total);
- 
+
   const tx = db.transaction(function(){
     db.prepare('UPDATE users SET wallet_balance = ? WHERE id = ?').run(newBalance, req.userId);
     db.prepare(`INSERT INTO wallet_tx (id, vendor_id, type, amount, balance_after, note, invoice_id, created_at)
@@ -410,15 +407,15 @@ app.post('/invoices', requireAuth, function(req, res){
       { invoiceId: invId, vendorId: req.userId });
   });
   tx();
- 
+
   const savedRow = db.prepare('SELECT * FROM invoices WHERE id = ?').get(invId);
   res.json({ invoice: invoiceRowToObj(savedRow, true), walletBalance: newBalance });
 });
- 
+
 app.delete('/invoices/:id', requireAuth, requireAdmin, function(req, res){
   const row = db.prepare('SELECT * FROM invoices WHERE id = ?').get(req.params.id);
   if(!row) return res.status(404).json({ error: 'Invoice not found.' });
- 
+
   const tx = db.transaction(function(){
     if(row.payment_mode === 'Wallet'){
       const vendor = db.prepare('SELECT wallet_balance FROM users WHERE id = ?').get(row.vendor_id);
@@ -435,27 +432,27 @@ app.delete('/invoices/:id', requireAuth, requireAdmin, function(req, res){
   tx();
   res.json({ ok: true });
 });
- 
+
 /* ============================= WALLET ============================= */
- 
+
 app.get('/wallet/me', requireAuth, function(req, res){
   if(req.userRole !== 'vendor') return res.status(403).json({ error: 'Vendor accounts only.' });
   const user = db.prepare('SELECT wallet_balance FROM users WHERE id = ?').get(req.userId);
   const tx = db.prepare('SELECT * FROM wallet_tx WHERE vendor_id = ? ORDER BY created_at ASC').all(req.userId);
   res.json({ balance: user.wallet_balance, transactions: tx.map(walletTxToObj) });
 });
- 
+
 app.get('/wallet/vendor/:vendorId', requireAuth, requireAdmin, function(req, res){
   const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.params.vendorId);
   if(!user) return res.status(404).json({ error: 'Vendor not found.' });
   const tx = db.prepare('SELECT * FROM wallet_tx WHERE vendor_id = ? ORDER BY created_at ASC').all(req.params.vendorId);
   res.json({ vendor: publicUser(user), transactions: tx.map(walletTxToObj) });
 });
- 
+
 function walletTxToObj(t){
   return { id: t.id, vendorId: t.vendor_id, type: t.type, amount: t.amount, balanceAfter: t.balance_after, note: t.note, invoiceId: t.invoice_id, date: t.created_at };
 }
- 
+
 app.post('/wallet/adjust', requireAuth, requireAdmin, function(req, res){
   const vendorId = req.body.vendorId;
   const amount = Number(req.body.amount);
@@ -478,9 +475,9 @@ app.post('/wallet/adjust', requireAuth, requireAdmin, function(req, res){
   tx();
   res.json({ ok: true, balance: newBalance });
 });
- 
+
 /* ============================= RECHARGE REQUESTS ============================= */
- 
+
 app.post('/recharge-requests', requireAuth, function(req, res){
   if(req.userRole !== 'vendor') return res.status(403).json({ error: 'Vendor accounts only.' });
   const amount = Number(req.body.amount);
@@ -489,7 +486,7 @@ app.post('/recharge-requests', requireAuth, function(req, res){
   const note = String(req.body.note || '').trim();
   if(!amount || amount <= 0) return res.status(400).json({ error: 'Enter the amount you paid.' });
   if(!ref) return res.status(400).json({ error: 'Enter the payment reference / UTR / transaction ID.' });
- 
+
   const vendor = db.prepare('SELECT * FROM users WHERE id = ?').get(req.userId);
   const id = uid('rr');
   db.prepare(`INSERT INTO recharge_requests (id, vendor_id, vendor_name, amount, method, ref, note, status, requested_at)
@@ -500,7 +497,7 @@ app.post('/recharge-requests', requireAuth, function(req, res){
     { vendorId: req.userId });
   res.json({ ok: true });
 });
- 
+
 app.get('/recharge-requests', requireAuth, function(req, res){
   const forVendor = req.userRole !== 'admin';
   const rows = forVendor
@@ -508,11 +505,11 @@ app.get('/recharge-requests', requireAuth, function(req, res){
     : db.prepare('SELECT * FROM recharge_requests ORDER BY requested_at ASC').all();
   res.json({ requests: rows.map(rrToObj) });
 });
- 
+
 function rrToObj(r){
   return { id: r.id, vendorId: r.vendor_id, vendorName: r.vendor_name, amount: r.amount, method: r.method, ref: r.ref, note: r.note, status: r.status, requestedAt: r.requested_at, decidedAt: r.decided_at, decisionNote: r.decision_note };
 }
- 
+
 app.post('/recharge-requests/:id/approve', requireAuth, requireAdmin, function(req, res){
   const r = db.prepare('SELECT * FROM recharge_requests WHERE id = ?').get(req.params.id);
   if(!r || r.status !== 'Pending') return res.status(400).json({ error: 'Request not pending.' });
@@ -528,7 +525,7 @@ app.post('/recharge-requests/:id/approve', requireAuth, requireAdmin, function(r
   tx();
   res.json({ ok: true, balance: newBalance });
 });
- 
+
 app.post('/recharge-requests/:id/reject', requireAuth, requireAdmin, function(req, res){
   const r = db.prepare('SELECT * FROM recharge_requests WHERE id = ?').get(req.params.id);
   if(!r || r.status !== 'Pending') return res.status(400).json({ error: 'Request not pending.' });
@@ -536,32 +533,32 @@ app.post('/recharge-requests/:id/reject', requireAuth, requireAdmin, function(re
   db.prepare("UPDATE recharge_requests SET status='Rejected', decided_at=?, decision_note=? WHERE id=?").run(nowISO(), reason, r.id);
   res.json({ ok: true });
 });
- 
+
 /* ============================= NOTIFICATIONS (admin) ============================= */
- 
+
 app.get('/notifications', requireAuth, requireAdmin, function(req, res){
   const rows = db.prepare("SELECT * FROM notifications WHERE for_role='admin' ORDER BY created_at ASC").all();
   res.json({ notifications: rows.map(function(n){
     return { id:n.id, title:n.title, message:n.message, invoiceId:n.invoice_id, vendorId:n.vendor_id, read: !!n.read, createdAt: n.created_at };
   })});
 });
- 
+
 app.post('/notifications/:id/read', requireAuth, requireAdmin, function(req, res){
   db.prepare('UPDATE notifications SET read = 1 WHERE id = ?').run(req.params.id);
   res.json({ ok: true });
 });
- 
+
 app.post('/notifications/read-all', requireAuth, requireAdmin, function(req, res){
   db.prepare("UPDATE notifications SET read = 1 WHERE for_role='admin'").run();
   res.json({ ok: true });
 });
- 
+
 /* ============================= PAYMENTS (Razorpay) ============================= */
- 
+
 app.get('/payments/status', requireAuth, function(req, res){
   res.json({ enabled: !!razorpay });
 });
- 
+
 app.post('/payments/create-order', requireAuth, async function(req, res){
   if(req.userRole !== 'vendor') return res.status(403).json({ error: 'Vendor accounts only.' });
   if(!razorpay) return res.status(500).json({ error: 'Payment gateway is not configured on this server.' });
@@ -577,21 +574,21 @@ app.post('/payments/create-order', requireAuth, async function(req, res){
     res.status(500).json({ error: 'Could not create order.' });
   }
 });
- 
+
 app.post('/payments/verify-payment', requireAuth, function(req, res){
   if(req.userRole !== 'vendor') return res.status(403).json({ error: 'Vendor accounts only.' });
   const orderId = req.body.razorpay_order_id;
   const paymentId = req.body.razorpay_payment_id;
   const signature = req.body.razorpay_signature;
   if(!orderId || !paymentId || !signature) return res.status(400).json({ valid:false, error: 'Missing verification fields.' });
- 
+
   const orderRow = db.prepare('SELECT * FROM razorpay_orders WHERE order_id = ?').get(orderId);
   if(!orderRow || orderRow.vendor_id !== req.userId) return res.status(403).json({ valid:false, error: 'Order does not belong to this account.' });
   if(orderRow.status === 'verified') return res.status(400).json({ valid:false, error: 'This payment was already credited.' });
- 
+
   const expected = crypto.createHmac('sha256', RAZORPAY_KEY_SECRET).update(orderId+'|'+paymentId).digest('hex');
   if(expected !== signature) return res.json({ valid: false });
- 
+
   const vendor = db.prepare('SELECT wallet_balance FROM users WHERE id = ?').get(req.userId);
   const newBalance = round2(vendor.wallet_balance + orderRow.amount);
   const tx = db.transaction(function(){
@@ -604,7 +601,7 @@ app.post('/payments/verify-payment', requireAuth, function(req, res){
   tx();
   res.json({ valid: true, balance: newBalance });
 });
- 
+
 // Emergency reset: set RESET_ALL_PASSWORDS_TO (min 6 chars) as an env var, deploy once,
 // every account (admin + vendors) gets that password. REMOVE the variable afterwards.
 if(process.env.RESET_ALL_PASSWORDS_TO){
@@ -614,9 +611,7 @@ if(process.env.RESET_ALL_PASSWORDS_TO){
     console.log('RESET_ALL_PASSWORDS_TO applied to ' + n + ' account(s). Remove this env var now.');
   }else console.log('RESET_ALL_PASSWORDS_TO ignored: must be at least 6 characters.');
 }
- 
+
 app.listen(PORT, function(){
   console.log('BCI Express backend listening on port ' + PORT);
 });
- 
-Claude finished the response
