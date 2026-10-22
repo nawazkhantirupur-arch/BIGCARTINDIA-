@@ -1,0 +1,2026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BCI Express — Big Cart India</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#141C26;
+  --paper:#EDE8DC;
+  --panel:#FFFFFF;
+  --accent:#C1440E;
+  --accent-dim:#E4C9BC;
+  --accent-2:#2B4C7E;
+  --line:#D3CBB8;
+  --line-dark:#3A4452;
+  --muted:#6B6355;
+  --success:#2F6B4F;
+  --success-bg:#E4EEE7;
+  --danger:#A32C2C;
+  --danger-bg:#F5E5E2;
+  --font-display:'Barlow Condensed',sans-serif;
+  --font-mono:'IBM Plex Mono',monospace;
+  --font-body:'Inter',sans-serif;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:var(--font-body);
+  background:var(--paper);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  font-size:14px;
+  line-height:1.5;
+}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:600;margin:0;letter-spacing:0.2px;}
+a{color:var(--accent-2);}
+button, input, select, textarea{font-family:inherit;font-size:14px;}
+button{cursor:pointer;}
+.mono{font-family:var(--font-mono);}
+::selection{background:var(--accent);color:#fff;}
+
+/* ---------- Login ---------- */
+.login-wrap{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:32px 16px;
+  background:
+    linear-gradient(var(--paper),var(--paper));
+}
+.login-card{
+  width:100%;
+  max-width:560px;
+}
+.brandmark{
+  display:flex;
+  align-items:baseline;
+  gap:10px;
+  margin-bottom:6px;
+}
+.brandmark .glyph{
+  width:38px;height:38px;
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-weight:700;font-size:15px;
+  background:var(--accent);
+  color:#fff;
+}
+.brandmark h1{font-size:34px;line-height:1;}
+.brand-sub{
+  font-family:var(--font-mono);
+  font-size:11.5px;
+  color:var(--muted);
+  letter-spacing:0.5px;
+  margin:2px 0 28px 0;
+}
+.panel{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:6px;
+}
+.login-panel{padding:26px 26px 22px;}
+.login-panel h2{font-size:19px;margin-bottom:14px;font-weight:600;font-family:var(--font-body);}
+.profile-grid{display:flex;flex-direction:column;gap:8px;margin-bottom:6px;}
+.profile-row{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  border:1px solid var(--line);
+  border-radius:5px;
+  padding:11px 14px;
+  background:#FCFBF8;
+  transition:border-color .12s ease;
+}
+.profile-row:hover{border-color:var(--ink);}
+.profile-id{display:flex;align-items:center;gap:11px;}
+.profile-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--ink);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:15px;font-weight:600;
+  flex:none;
+}
+.profile-avatar.role-admin{background:var(--accent);}
+.profile-name{font-weight:600;font-size:14.5px;}
+.profile-meta{font-size:12px;color:var(--muted);font-family:var(--font-mono);}
+.btn{
+  border:1px solid var(--ink);
+  background:var(--ink);
+  color:#fff;
+  padding:8px 16px;
+  border-radius:4px;
+  font-weight:600;
+  font-size:13px;
+  transition:transform .08s ease, opacity .12s ease;
+}
+.btn:hover{opacity:0.86;}
+.btn:active{transform:translateY(1px);}
+.btn-outline{
+  background:transparent;
+  color:var(--ink);
+  border:1px solid var(--ink);
+}
+.btn-accent{background:var(--accent);border-color:var(--accent);}
+.btn-sm{padding:5px 11px;font-size:12.5px;border-radius:4px;}
+.btn-ghost{background:transparent;border:1px solid transparent;color:var(--muted);}
+.btn-ghost:hover{color:var(--ink);}
+.btn-danger{background:var(--danger);border-color:var(--danger);}
+.btn[disabled]{opacity:0.4;cursor:not-allowed;}
+.divider-label{
+  display:flex;align-items:center;gap:10px;
+  color:var(--muted);font-family:var(--font-mono);font-size:11px;letter-spacing:0.5px;
+  margin:20px 0 16px;
+}
+.divider-label::before,.divider-label::after{content:'';flex:1;height:1px;background:var(--line);}
+.field{margin-bottom:13px;}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:600;}
+.field input[type=text], .field input[type=number], .field input[type=date], .field input[type=password], .field select, .field textarea{
+  width:100%;
+  padding:8px 10px;
+  border:1px solid var(--line);
+  border-radius:4px;
+  background:#fff;
+  color:var(--ink);
+}
+.field input:focus, .field select:focus, .field textarea:focus{
+  outline:2px solid var(--accent-2);
+  outline-offset:0;
+  border-color:var(--accent-2);
+}
+.role-toggle{display:flex;gap:8px;}
+.role-opt{
+  flex:1;
+  border:1px solid var(--line);
+  border-radius:4px;
+  padding:9px 10px;
+  text-align:center;
+  cursor:pointer;
+  font-weight:600;
+  font-size:13px;
+  color:var(--muted);
+  background:#FCFBF8;
+}
+.role-opt.active{border-color:var(--ink);color:var(--ink);background:#fff;box-shadow:inset 0 0 0 1px var(--ink);}
+.role-opt.locked{opacity:0.4;cursor:not-allowed;}
+.empty-note{font-size:12.5px;color:var(--muted);padding:10px 0;}
+.auth-error{background:var(--danger-bg);color:var(--danger);border-radius:4px;padding:8px 11px;font-size:12.5px;margin-bottom:13px;font-weight:600;}
+.auth-switch{text-align:center;font-size:13px;color:var(--muted);margin-top:16px;}
+.login-panel{box-shadow:0 10px 28px rgba(20,28,38,0.07);}
+.app-icon{
+  width:44px;height:44px;border-radius:11px;
+  background:var(--ink);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-weight:700;font-size:16px;
+  flex:none;
+}
+
+/* ---------- App shell ---------- */
+.shell{display:flex;min-height:100vh;}
+.sidebar{
+  width:212px;flex:none;
+  background:var(--ink);
+  color:#EFEAE0;
+  display:flex;flex-direction:column;
+  padding:18px 14px;
+}
+.sidebar .brandmark{margin-bottom:2px;}
+.sidebar .brandmark .glyph{background:var(--accent);color:#fff;}
+.sidebar .brandmark h1{font-size:22px;color:#fff;}
+.sidebar .brand-sub{color:#8B9099;margin-bottom:22px;}
+.nav-group{margin-bottom:4px;}
+.nav-label{font-family:var(--font-mono);font-size:10px;letter-spacing:0.8px;color:#7C828C;padding:10px 10px 6px;}
+.nav-item{
+  display:flex;align-items:center;gap:9px;
+  padding:9px 10px;border-radius:4px;
+  color:#D9D5C8;font-weight:500;font-size:13.5px;
+  cursor:pointer;margin-bottom:2px;
+}
+.nav-item:hover{background:#212C3A;}
+.nav-item.active{background:var(--accent);color:#fff;font-weight:600;}
+.nav-dot{width:5px;height:5px;border-radius:50%;background:currentColor;opacity:0.55;flex:none;}
+.sidebar-foot{margin-top:auto;padding-top:14px;border-top:1px solid #2A3442;}
+.side-user{display:flex;align-items:center;gap:9px;margin-bottom:10px;}
+.side-user-name{font-size:13px;font-weight:600;color:#fff;}
+.side-user-role{font-size:11px;color:#8B9099;font-family:var(--font-mono);}
+
+.main{flex:1;display:flex;flex-direction:column;min-width:0;}
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 30px;border-bottom:1px solid var(--line);background:var(--panel);
+}
+.topbar h2{font-size:22px;}
+.topbar-sub{font-size:12.5px;color:var(--muted);margin-top:2px;}
+.content{padding:26px 30px 60px;flex:1;}
+
+/* ---------- Cards / stats ---------- */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:24px;}
+.stat-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:6px;
+  padding:15px 16px;
+}
+.stat-card .label{font-family:var(--font-mono);font-size:10.5px;color:var(--muted);letter-spacing:0.4px;margin-bottom:8px;}
+.stat-card .value{font-family:var(--font-display);font-size:28px;font-weight:600;}
+.stat-card .sub{font-size:11.5px;color:var(--muted);margin-top:3px;}
+
+.section{margin-bottom:28px;}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px;flex-wrap:wrap;}
+.section-head h3{font-size:19px;}
+.section-head .desc{font-size:12.5px;color:var(--muted);margin-top:2px;}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:18px 20px;}
+.card + .card{margin-top:12px;}
+
+table{width:100%;border-collapse:collapse;}
+th{
+  text-align:left;font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.4px;
+  color:var(--muted);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--line);
+  white-space:nowrap;
+}
+td{padding:9px 10px;border-bottom:1px solid #EAE5D8;font-size:13px;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+.table-wrap{background:var(--panel);border:1px solid var(--line);border-radius:6px;overflow:auto;}
+.table-wrap table{min-width:640px;}
+.row-hover:hover{background:#FBF9F3;}
+
+.badge{
+  display:inline-block;padding:2.5px 8px;border-radius:20px;font-size:11px;font-weight:600;
+  font-family:var(--font-mono);
+}
+.badge-paid{background:var(--success-bg);color:var(--success);}
+.badge-unpaid{background:var(--danger-bg);color:var(--danger);}
+.badge-b2b{background:#E5EAF1;color:var(--accent-2);}
+.badge-b2c{background:#F1E7DA;color:#8A5A22;}
+.zone-chip{
+  display:inline-block;padding:1.5px 7px;border-radius:3px;font-family:var(--font-mono);font-size:11.5px;
+  background:#EFEAE0;border:1px solid var(--line);font-weight:600;
+}
+
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:18px;}
+.tab{
+  padding:9px 15px;font-weight:600;font-size:13.5px;color:var(--muted);cursor:pointer;
+  border-bottom:2px solid transparent;margin-bottom:-1px;
+}
+.tab:hover{color:var(--ink);}
+.tab.active{color:var(--ink);border-bottom-color:var(--accent);}
+
+.pill-toggle{display:inline-flex;border:1px solid var(--ink);border-radius:5px;overflow:hidden;}
+.pill-opt{padding:7px 16px;font-weight:600;font-size:13px;color:var(--ink);background:#fff;cursor:pointer;}
+.pill-opt.active{background:var(--ink);color:#fff;}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+@media (max-width:760px){.grid-2,.grid-3{grid-template-columns:1fr;}}
+
+.zone-matrix-table th, .zone-matrix-table td{text-align:center;}
+.zone-matrix-table th:first-child, .zone-matrix-table td:first-child{text-align:left;}
+.zone-matrix-table input{
+  width:56px;text-align:center;border:1px solid var(--line);border-radius:3px;padding:4px 3px;
+  font-family:var(--font-mono);font-size:12.5px;
+}
+.zone-matrix-table td:first-child{font-weight:600;font-family:var(--font-mono);background:#F7F4EC;}
+
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+.filter-bar input, .filter-bar select{
+  padding:7px 9px;border:1px solid var(--line);border-radius:4px;background:#fff;font-size:12.5px;
+}
+
+.breakdown-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--line);font-size:13px;}
+.breakdown-row:last-child{border-bottom:none;}
+.breakdown-row.total{font-weight:700;font-size:16px;border-top:2px solid var(--ink);border-bottom:none;padding-top:10px;margin-top:4px;}
+.breakdown-row .lbl{color:var(--muted);}
+.breakdown-row.total .lbl{color:var(--ink);}
+
+.note-strip{
+  background:#F7F1E3;border:1px solid #E4D8B8;border-radius:5px;padding:10px 13px;font-size:12.5px;color:#6B5A27;margin-bottom:16px;
+}
+.doc-stamp{
+  font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:0.4px;
+}
+.empty-state{
+  text-align:center;padding:50px 20px;color:var(--muted);
+}
+.empty-state .icon{font-size:34px;margin-bottom:10px;opacity:0.5;}
+.empty-state h4{font-size:16px;color:var(--ink);margin-bottom:6px;}
+.link-btn{background:none;border:none;color:var(--accent-2);font-weight:600;padding:0;text-decoration:underline;cursor:pointer;font-size:inherit;}
+
+/* Invoice detail / printable */
+.invoice-doc{max-width:720px;margin:0 auto;}
+.invoice-head{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:16px;border-bottom:2px solid var(--ink);margin-bottom:18px;}
+.invoice-head .num{font-family:var(--font-mono);font-size:13px;color:var(--muted);}
+.addr-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:18px;}
+.addr-block h5{font-family:var(--font-mono);font-size:10.5px;color:var(--muted);letter-spacing:0.5px;margin-bottom:6px;}
+.addr-block .city{font-weight:700;font-size:16px;}
+
+@media print{
+  .sidebar,.topbar,.no-print{display:none !important;}
+  .main{width:100%;}
+  .content{padding:0;}
+  body{background:#fff;}
+}
+
+.toast{
+  position:fixed;bottom:20px;right:20px;background:var(--ink);color:#fff;padding:11px 18px;
+  border-radius:5px;font-size:13px;font-weight:500;box-shadow:0 4px 16px rgba(0,0,0,.25);
+  z-index:999;opacity:0;transform:translateY(8px);transition:all .18s ease;pointer-events:none;
+}
+.toast.show{opacity:1;transform:translateY(0);}
+.checkbox-row{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px;}
+.checkbox-row input{width:15px;height:15px;}
+.helptext{font-size:11.5px;color:var(--muted);margin-top:3px;}
+.icon-btn{background:none;border:1px solid var(--line);border-radius:4px;padding:4px 8px;font-size:12px;color:var(--muted);}
+.icon-btn:hover{border-color:var(--ink);color:var(--ink);}
+.datalist-input{position:relative;}
+</style>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<div id="toast" class="toast"></div>
+<datalist id="dl-cities"></datalist>
+<script>
+(function(){
+'use strict';
+
+/* ================= Server connection ================= */
+const API_BASE_KEY = 'bci_express_api_base';
+const TOKEN_KEY = 'bci_express_token';
+
+const DEFAULT_API_BASE = 'https://bci-express.onrender.com';
+function getApiBase(){ const v = localStorage.getItem(API_BASE_KEY); return v === null ? DEFAULT_API_BASE : v; }
+function setApiBase(url){ localStorage.setItem(API_BASE_KEY, String(url||'').trim().replace(/\/+$/,'')); }
+function clearApiBase(){ localStorage.setItem(API_BASE_KEY, ''); }
+function getToken(){ return localStorage.getItem(TOKEN_KEY) || ''; }
+function setToken(t){ localStorage.setItem(TOKEN_KEY, t); }
+function clearToken(){ localStorage.removeItem(TOKEN_KEY); }
+
+async function api(method, path, body){
+  const base = getApiBase();
+  if(!base) throw new Error('Not connected to a server yet.');
+  const headers = { 'Content-Type': 'application/json' };
+  const token = getToken();
+  if(token) headers['Authorization'] = 'Bearer ' + token;
+  let res;
+  try{
+    res = await fetch(base + path, {
+      method: method,
+      headers: headers,
+      body: body != null ? JSON.stringify(body) : undefined
+    });
+  }catch(e){
+    throw new Error('Could not reach the server — check the URL and your connection.');
+  }
+  let data = null;
+  try{ data = await res.json(); }catch(e){ /* some responses have no body */ }
+  if(!res.ok){
+    if(res.status === 401){ clearToken(); }
+    throw new Error((data && data.error) || ('Request failed (' + res.status + ')'));
+  }
+  return data || {};
+}
+
+/* ================= Client-side cache (populated from the server) ================= */
+const DB = {
+  me: null,
+  couriers: [],
+  vendors: [],
+  invoices: [],
+  currentInvoice: null,
+  walletTx: [],
+  rechargeRequests: [],
+  notifications: [],
+  viewedVendor: null,
+  paymentsEnabled: false
+};
+
+function currentUser(){ return DB.me; }
+function getCourier(id){ return DB.couriers.find(function(c){ return c.id===id; }); }
+function findCity(courier, name){
+  if(!name || !courier) return null;
+  const n = String(name).trim().toLowerCase();
+  return courier.cities.find(function(c){ return c.city.toLowerCase()===n; }) || null;
+}
+
+/* ================= Formatting helpers ================= */
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; }); }
+function fmt(n){
+  if(n==null || isNaN(n)) return '—';
+  return '₹' + Number(n).toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+function fmtWt(n){ return Number(n).toLocaleString('en-IN',{minimumFractionDigits:1,maximumFractionDigits:2}); }
+function fmtDate(iso){
+  if(!iso) return '—';
+  const d = new Date(iso);
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear();
+}
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast._h);
+  showToast._h = setTimeout(function(){ t.classList.remove('show'); }, 2800);
+}
+
+/* ================= App state ================= */
+const App = {
+  route: 'dashboard', params: {},
+  authMode: 'signin', authError: '', newUserRole: 'vendor', signupDraft: null, signinDraft: null,
+  shipmentType: 'B2B', courierTab: 'zones', cityFilter: '', invoiceFilters: {}, loading: false
+};
+
+const root = document.getElementById('root');
+
+function initials(name){
+  const parts = String(name||'?').trim().split(/\s+/);
+  return (parts[0][0]||'').toUpperCase() + (parts[1] ? parts[1][0].toUpperCase() : '');
+}
+
+/* ================= Layout ================= */
+function layout(u){
+  return (
+    '<div class="shell">' +
+      sidebar(u) +
+      '<div class="main">' +
+        '<div id="content" class="content"></div>' +
+      '</div>' +
+    '</div>'
+  );
+}
+
+function sidebar(u){
+  const pendingCount = DB.rechargeRequests.filter(function(r){ return r.status==='Pending'; }).length;
+  const unreadNotifs = DB.notifications.filter(function(n){ return !n.read; }).length;
+  const adminItems = [
+    ['dashboard','Overview'],
+    ['notifications','Notifications'+(unreadNotifs?' ('+unreadNotifs+')':'')],
+    ['couriers','Couriers &amp; Rate Master'],
+    ['vendors','Vendors'],
+    ['invoices','All Invoices'],
+    ['recharge-requests','Recharge Requests'+(pendingCount?' ('+pendingCount+')':'')]
+  ];
+  const vendorItems = [
+    ['dashboard','Overview'],
+    ['new-shipment','New Shipment'],
+    ['wallet','Wallet'],
+    ['invoices','My Invoices']
+  ];
+  const items = u.role==='admin' ? adminItems : vendorItems;
+  const activeRoute = (App.route==='courier-detail') ? 'couriers' : (App.route==='invoice-detail' ? 'invoices' : (App.route==='vendor-wallet' ? 'vendors' : App.route));
+  let navHtml = items.map(function(it){
+    const active = activeRoute===it[0] ? ' active' : '';
+    return '<div class="nav-item'+active+'" data-nav="'+it[0]+'"><span class="nav-dot"></span>'+it[1]+'</div>';
+  }).join('');
+
+  const walletChip = (u.role==='vendor') ? '<div class="side-user-role" data-balance-chip style="color:#B8D9C4;margin-top:2px;">'+fmt(u.walletBalance||0)+' balance</div>' : '';
+
+  return (
+    '<div class="sidebar">' +
+      '<div class="brandmark"><div class="glyph">BX</div><h1>BCI Express</h1></div>' +
+      '<div class="brand-sub">BIG CART INDIA</div>' +
+      '<div class="nav-group">'+navHtml+'</div>' +
+      '<div class="sidebar-foot">' +
+        '<div class="side-user">' +
+          '<div class="profile-avatar'+(u.role==='admin'?' role-admin':'')+'" style="width:28px;height:28px;font-size:12.5px;">'+esc(initials(u.name))+'</div>' +
+          '<div>' +
+            '<div class="side-user-name">'+esc(u.name)+'</div>' +
+            '<div class="side-user-role">'+(u.role==='admin' ? 'Administrator' : esc(u.vendorName||'Vendor'))+'</div>' +
+            walletChip +
+          '</div>' +
+        '</div>' +
+        '<div class="doc-stamp" style="margin-bottom:8px;word-break:break-all;">'+esc(getApiBase())+'</div>' +
+        '<button class="btn btn-outline btn-sm" style="width:100%;color:#EFEAE0;border-color:#3A4452;" data-action="logout">Log out</button>' +
+      '</div>' +
+    '</div>'
+  );
+}
+
+function topbar(title, sub, actionsHtml){
+  return (
+    '<div class="topbar">' +
+      '<div><h2>'+title+'</h2>' + (sub ? '<div class="topbar-sub">'+sub+'</div>' : '') + '</div>' +
+      '<div class="no-print" style="display:flex;gap:8px;">'+(actionsHtml||'')+'</div>' +
+    '</div>'
+  );
+}
+
+/* ================= Render (synchronous — uses whatever is in DB right now) ================= */
+function render(){
+  const u = currentUser();
+  if(!u){
+    root.innerHTML = viewLogin();
+    return;
+  }
+  root.innerHTML = layout(u);
+  renderContent(u);
+}
+
+function renderContent(u){
+  const el = document.getElementById('content');
+  let route = App.route;
+  if(u.role!=='admin' && (route==='couriers' || route==='vendors' || route==='courier-detail' || route==='vendor-wallet' || route==='recharge-requests' || route==='notifications')) route = 'dashboard';
+
+  let html = '';
+  if(route==='dashboard') html = u.role==='admin' ? viewAdminDashboard() : viewVendorDashboard(u);
+  else if(route==='couriers') html = viewCouriersList();
+  else if(route==='courier-detail') html = viewCourierDetail(App.params.id);
+  else if(route==='vendors') html = viewVendors();
+  else if(route==='vendor-wallet') html = viewVendorWalletDetail(App.params.id);
+  else if(route==='wallet') html = viewWallet(u);
+  else if(route==='invoices') html = viewInvoices(u);
+  else if(route==='invoice-detail') html = viewInvoiceDetail(App.params.id, u);
+  else if(route==='new-shipment') html = viewNewShipment(u);
+  else if(route==='recharge-requests') html = viewRechargeRequests();
+  else if(route==='notifications') html = viewNotifications();
+  else html = viewAdminDashboard();
+
+  el.innerHTML = html;
+  afterRender(u);
+}
+
+function afterRender(u){
+  if(App.route==='new-shipment'){
+    updateShipmentPreview();
+  }
+}
+
+/* ================= Async navigation: fetch what a route needs, then render ================= */
+async function goTo(route, params){
+  App.route = route;
+  App.params = params || {};
+  try{
+    await loadDataForRoute(route, App.params);
+  }catch(e){
+    showToast(e.message || 'Could not load that page.');
+  }
+  render();
+  window.scrollTo(0,0);
+}
+
+async function loadDataForRoute(route, params){
+  const u = currentUser();
+  if(!u) return;
+
+  try{
+    const me = await api('GET','/auth/me');
+    DB.me = me.user;
+  }catch(e){ /* keep whatever we already have if this quick refresh fails */ }
+
+  if(route==='dashboard'){
+    if(u.role==='admin'){
+      const [inv, ven, rr, ntf] = await Promise.all([
+        api('GET','/invoices'), api('GET','/vendors'), api('GET','/recharge-requests'), api('GET','/notifications')
+      ]);
+      DB.invoices = inv.invoices; DB.vendors = ven.vendors; DB.rechargeRequests = rr.requests; DB.notifications = ntf.notifications;
+    } else {
+      const inv = await api('GET','/invoices');
+      DB.invoices = inv.invoices;
+    }
+  } else if(route==='couriers' || route==='courier-detail'){
+    const c = await api('GET','/couriers');
+    DB.couriers = c.couriers;
+  } else if(route==='vendors'){
+    const v = await api('GET','/vendors');
+    DB.vendors = v.vendors;
+  } else if(route==='vendor-wallet'){
+    const w = await api('GET','/wallet/vendor/'+params.id);
+    DB.viewedVendor = w;
+  } else if(route==='wallet'){
+    const [w, rr, status] = await Promise.all([
+      api('GET','/wallet/me'), api('GET','/recharge-requests'), api('GET','/payments/status')
+    ]);
+    DB.walletTx = w.transactions; DB.me.walletBalance = w.balance;
+    DB.rechargeRequests = rr.requests; DB.paymentsEnabled = status.enabled;
+  } else if(route==='invoices'){
+    const qs = buildInvoiceQuery();
+    const inv = await api('GET','/invoices'+qs);
+    DB.invoices = inv.invoices;
+    if(u.role==='admin' && !DB.vendors.length){
+      const v = await api('GET','/vendors'); DB.vendors = v.vendors;
+    }
+  } else if(route==='invoice-detail'){
+    const inv = await api('GET','/invoices/'+params.id);
+    DB.currentInvoice = inv.invoice;
+  } else if(route==='new-shipment'){
+    const c = await api('GET','/couriers');
+    DB.couriers = c.couriers;
+    const status = await api('GET','/payments/status');
+    DB.paymentsEnabled = status.enabled;
+  } else if(route==='recharge-requests'){
+    const rr = await api('GET','/recharge-requests');
+    DB.rechargeRequests = rr.requests;
+  } else if(route==='notifications'){
+    const ntf = await api('GET','/notifications');
+    DB.notifications = ntf.notifications;
+  }
+}
+
+function buildInvoiceQuery(){
+  const f = App.invoiceFilters || {};
+  const parts = [];
+  if(f.vendorId) parts.push('vendorId='+encodeURIComponent(f.vendorId));
+  if(f.courierId) parts.push('courierId='+encodeURIComponent(f.courierId));
+  if(f.type) parts.push('type='+encodeURIComponent(f.type));
+  if(f.status) parts.push('status='+encodeURIComponent(f.status));
+  return parts.length ? '?'+parts.join('&') : '';
+}
+
+/* ================= Login flow ================= */
+function viewLogin(){
+  if(!getApiBase()) return viewConnectServer();
+  return App.authMode==='signup' ? viewSignup() : viewSignin();
+}
+
+function brandHeaderHtml(){
+  return (
+    '<div class="brandmark"><div class="glyph">BX</div><h1>BCI Express</h1></div>' +
+    '<div class="brand-sub">BIG CART INDIA · SHIPPING &amp; BILLING APP</div>'
+  );
+}
+
+function viewConnectServer(){
+  return (
+    '<div class="login-wrap">' +
+      '<div class="login-card">' +
+        brandHeaderHtml() +
+        '<div class="panel login-panel">' +
+          '<h2>Connect to your server</h2>' +
+          (App.authError ? '<div class="auth-error">'+esc(App.authError)+'</div>' : '') +
+          '<div class="helptext" style="margin-bottom:14px;">This app needs the BCI Express backend URL to sign in and share data across everyone\'s devices. Ask your admin for it, or paste it below once you\'ve deployed it.</div>' +
+          '<form id="connect-server-form">' +
+            '<div class="field"><label>Server URL</label><input type="text" id="cs-url" placeholder="https://bci-express-api.onrender.com"></div>' +
+            '<button type="submit" class="btn btn-accent" style="width:100%;">Connect</button>' +
+          '</form>' +
+        '</div>' +
+      '</div>' +
+    '</div>'
+  );
+}
+
+function viewSignin(){
+  const draft = App.signinDraft || {};
+  return (
+    '<div class="login-wrap">' +
+      '<div class="login-card">' +
+        brandHeaderHtml() +
+        '<div class="panel login-panel">' +
+          '<h2>Sign in</h2>' +
+          (App.authError ? '<div class="auth-error">'+esc(App.authError)+'</div>' : '') +
+          '<form id="signin-form">' +
+            '<div class="field"><label>Username</label><input type="text" id="si-username" autocapitalize="none" value="'+esc(draft.username||'')+'" placeholder="e.g. nazia.bci"></div>' +
+            '<div class="field"><label>Password</label><input type="password" id="si-password" placeholder="••••••••"></div>' +
+            '<button type="submit" class="btn btn-accent" style="width:100%;margin-top:6px;">Sign in</button>' +
+          '</form>' +
+          '<div class="auth-switch">New here? <button type="button" class="link-btn" data-action="go-signup">Create an account</button></div>' +
+          '<div class="auth-switch" style="margin-top:6px;">Connected to <span class="mono">'+esc(getApiBase())+'</span> · <button type="button" class="link-btn" data-action="change-server">change</button></div>' +
+        '</div>' +
+      '</div>' +
+    '</div>'
+  );
+}
+
+function viewSignup(){
+  const draft = App.signupDraft || {};
+  return (
+    '<div class="login-wrap">' +
+      '<div class="login-card">' +
+        brandHeaderHtml() +
+        '<div class="panel login-panel">' +
+          '<h2>Create account</h2>' +
+          (App.authError ? '<div class="auth-error">'+esc(App.authError)+'</div>' : '') +
+          '<form id="signup-form">' +
+            '<div class="field"><label>Full name</label><input type="text" id="su-name" value="'+esc(draft.name||'')+'" placeholder="e.g. Nazia Furheen"></div>' +
+            '<div class="field"><label>Username</label><input type="text" id="su-username" autocapitalize="none" value="'+esc(draft.username||'')+'" placeholder="e.g. nazia.bci"><div class="helptext">Used to sign in. Letters, numbers, dots — no spaces.</div></div>' +
+            '<div class="grid-2">' +
+              '<div class="field"><label>Password</label><input type="password" id="su-password" placeholder="min. 4 characters"></div>' +
+              '<div class="field"><label>Confirm password</label><input type="password" id="su-password2" placeholder="repeat password"></div>' +
+            '</div>' +
+            '<div class="field">' +
+              '<label>Role</label>' +
+              '<div class="role-toggle">' +
+                '<div class="role-opt'+(App.newUserRole==='vendor'?' active':'')+'" data-role="vendor">Vendor</div>' +
+                '<div class="role-opt'+(App.newUserRole==='admin'?' active':'')+'" data-role="admin">Admin</div>' +
+              '</div>' +
+              '<div class="helptext">Only one administrator is allowed per workspace — the server will tell you if that\'s already taken.</div>' +
+            '</div>' +
+            '<div class="field" id="vendor-name-field" style="'+(App.newUserRole==='admin'?'display:none;':'')+'">' +
+              '<label>Company / vendor name</label>' +
+              '<input type="text" id="su-vendor" value="'+esc(draft.vendorName||'')+'" placeholder="e.g. Big Cart India">' +
+            '</div>' +
+            '<button type="submit" class="btn btn-accent" style="width:100%;margin-top:6px;">Create account &amp; sign in</button>' +
+          '</form>' +
+          '<div class="auth-switch">Already have an account? <button type="button" class="link-btn" data-action="go-signin">Sign in</button></div>' +
+        '</div>' +
+      '</div>' +
+    '</div>'
+  );
+}
+
+/* ================= Admin: Dashboard ================= */
+function viewAdminDashboard(){
+  const invs = DB.invoices;
+  const total = invs.reduce(function(s,i){ return s+i.total; }, 0);
+  const unpaid = invs.filter(function(i){ return i.status!=='Paid'; }).reduce(function(s,i){ return s+i.total; }, 0);
+  const b2b = invs.filter(function(i){ return i.type==='B2B'; }).length;
+  const b2c = invs.filter(function(i){ return i.type==='B2C'; }).length;
+  const vendorCount = DB.vendors.length;
+  const totalWallet = DB.vendors.reduce(function(s,v){ return s+(v.walletBalance||0); }, 0);
+  const pendingRecharges = DB.rechargeRequests.filter(function(r){ return r.status==='Pending'; }).length;
+  const unreadNotifs = DB.notifications.filter(function(n){ return !n.read; }).length;
+
+  const byCourier = {};
+  invs.forEach(function(i){ byCourier[i.courierName] = (byCourier[i.courierName]||0) + i.total; });
+  const courierRows = Object.keys(byCourier).map(function(k){ return '<div class="breakdown-row"><span class="lbl">'+esc(k)+'</span><span>'+fmt(byCourier[k])+'</span></div>'; }).join('') ||
+    '<div class="empty-note">No shipments billed yet.</div>';
+
+  const recent = invs.slice(-6).reverse();
+  const recentRows = recent.length ? recent.map(invoiceRowHtml).join('') :
+    '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:26px;">No invoices yet. Vendors will see them here once they book a shipment.</td></tr>';
+
+  return (
+    topbar('Overview', 'Every courier, every vendor, one shared server.') +
+    '<div class="stat-grid">' +
+      '<div class="stat-card"><div class="label">TOTAL BILLED</div><div class="value">'+fmt(total)+'</div><div class="sub">'+invs.length+' invoice(s)</div></div>' +
+      '<div class="stat-card"><div class="label">OUTSTANDING</div><div class="value" style="color:var(--danger);">'+fmt(unpaid)+'</div><div class="sub">awaiting settlement</div></div>' +
+      '<div class="stat-card"><div class="label">B2B / B2C SPLIT</div><div class="value">'+b2b+' / '+b2c+'</div><div class="sub">consignments booked</div></div>' +
+      '<div class="stat-card"><div class="label">ACTIVE VENDORS</div><div class="value">'+vendorCount+'</div><div class="sub">'+DB.couriers.length+' courier(s) configured</div></div>' +
+      '<div class="stat-card"><div class="label">VENDOR WALLET FLOAT</div><div class="value">'+fmt(totalWallet)+'</div><div class="sub">total balance held by vendors</div></div>' +
+      '<div class="stat-card'+(pendingRecharges?' row-hover':'')+'" style="cursor:'+(pendingRecharges?'pointer':'default')+';"'+(pendingRecharges?' data-nav="recharge-requests"':'')+'><div class="label">RECHARGE REQUESTS</div><div class="value" style="color:'+(pendingRecharges?'var(--accent)':'inherit')+';">'+pendingRecharges+'</div><div class="sub">awaiting approval</div></div>' +
+      '<div class="stat-card row-hover" style="cursor:pointer;" data-nav="notifications"><div class="label">NOTIFICATIONS</div><div class="value" style="color:'+(unreadNotifs?'var(--accent)':'inherit')+';">'+unreadNotifs+'</div><div class="sub">unread</div></div>' +
+    '</div>' +
+    '<div class="grid-2">' +
+      '<div class="section">' +
+        '<div class="section-head"><h3>Recent invoices</h3></div>' +
+        '<div class="table-wrap"><table><thead><tr><th>Docket</th><th>Vendor</th><th>Courier</th><th>Route</th><th>Type</th><th>Amount</th><th>Status</th></tr></thead><tbody>'+recentRows+'</tbody></table></div>' +
+      '</div>' +
+      '<div class="section">' +
+        '<div class="section-head"><h3>Billed by courier</h3></div>' +
+        '<div class="card">'+courierRows+'</div>' +
+      '</div>' +
+    '</div>'
+  );
+}
+
+function invoiceRowHtml(i){
+  return (
+    '<tr class="row-hover" style="cursor:pointer;" data-action="open-invoice" data-id="'+i.id+'">' +
+      '<td class="mono">'+esc(i.invoiceNo)+'</td>' +
+      '<td>'+esc(i.vendorName)+'</td>' +
+      '<td>'+esc(i.courierName)+'</td>' +
+      '<td><span class="zone-chip">'+esc(i.sourceZone)+'</span> → <span class="zone-chip">'+esc(i.destZone)+'</span></td>' +
+      '<td><span class="badge badge-'+(i.type==='B2B'?'b2b':'b2c')+'">'+i.type+'</span></td>' +
+      '<td class="mono">'+fmt(i.total)+'</td>' +
+      '<td><span class="badge badge-'+(i.status==='Paid'?'paid':'unpaid')+'">'+i.status+'</span></td>' +
+    '</tr>'
+  );
+}
+
+/* ================= Admin: Couriers list ================= */
+function viewCouriersList(){
+  const rows = DB.couriers.map(function(c){
+    const shipCount = DB.invoices.filter(function(i){ return i.courierId===c.id; }).length;
+    return (
+      '<div class="card" style="display:flex;justify-content:space-between;align-items:center;">' +
+        '<div>' +
+          '<h4 style="font-size:16px;margin-bottom:4px;">'+esc(c.name)+'</h4>' +
+          '<div class="doc-stamp">'+c.zones.length+' zones · '+c.cities.length+' cities mapped · '+shipCount+' shipment(s) billed</div>' +
+        '</div>' +
+        '<div style="display:flex;gap:8px;">' +
+          '<button class="btn btn-outline btn-sm" data-action="open-courier" data-id="'+c.id+'">Open rate master</button>' +
+          '<button class="btn btn-ghost btn-sm" data-action="delete-courier" data-id="'+c.id+'">Remove</button>' +
+        '</div>' +
+      '</div>'
+    );
+  }).join('');
+
+  return (
+    topbar('Couriers &amp; rate master', 'Add as many courier partners as you work with — each keeps its own zone grid and charges.') +
+    '<div class="section">' +
+      '<div class="card" style="margin-bottom:16px;">' +
+        '<div class="section-head" style="margin-bottom:10px;"><h3 style="font-size:15px;">Add a courier</h3></div>' +
+        '<div style="display:flex;gap:10px;align-items:flex-end;">' +
+          '<div class="field" style="flex:1;margin-bottom:0;"><label>Courier name</label><input type="text" id="new-courier-name" placeholder="e.g. Xpressbees"></div>' +
+          '<button class="btn btn-accent" data-action="add-courier">Add courier</button>' +
+        '</div>' +
+        '<div class="helptext">New couriers start from the standard 9-zone (N1/N2/E/NE/W1/W2/S1/S2/Central) template — edit rates and city mapping after adding.</div>' +
+      '</div>' +
+      rows +
+    '</div>'
+  );
+}
+
+/* ================= Admin: Vendors ================= */
+function viewVendors(){
+  const vendors = DB.vendors;
+  const rows = vendors.map(function(v){
+    return (
+      '<tr class="row-hover">' +
+        '<td><strong>'+esc(v.vendorName||v.name)+'</strong></td>' +
+        '<td>'+esc(v.name)+' <span class="doc-stamp">@'+esc(v.username||'')+'</span></td>' +
+        '<td class="mono">'+fmtDate(v.createdAt)+'</td>' +
+        '<td class="mono">'+(v.invoiceCount||0)+'</td>' +
+        '<td class="mono">'+fmt(v.invoiceTotal||0)+'</td>' +
+        '<td class="mono" style="font-weight:700;">'+fmt(v.walletBalance||0)+'</td>' +
+        '<td style="display:flex;gap:6px;"><button class="btn btn-ghost btn-sm" data-action="filter-vendor-invoices" data-id="'+v.id+'">Invoices</button><button class="btn btn-outline btn-sm" data-action="open-vendor-wallet" data-id="'+v.id+'">Wallet</button></td>' +
+      '</tr>'
+    );
+  }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:26px;">No vendor accounts yet.</td></tr>';
+
+  return (
+    topbar('Vendors', vendors.length+' vendor account(s) on this app.') +
+    '<div class="table-wrap"><table><thead><tr><th>Company</th><th>Contact</th><th>Joined</th><th>Shipments</th><th>Total billed</th><th>Wallet</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>'
+  );
+}
+
+/* ================= Admin: Courier detail ================= */
+function viewCourierDetail(courierId){
+  const c = getCourier(courierId);
+  if(!c){
+    return topbar('Courier not found','') + '<div class="empty-state"><h4>This courier no longer exists.</h4><button class="btn" data-action="go-couriers">Back to couriers</button></div>';
+  }
+  const tab = App.courierTab || 'zones';
+  const tabs = [
+    ['zones','Zone master'],
+    ['rates','Rate master'],
+    ['cities','City mapping'],
+    ['pincodes','PIN / state fallback']
+  ];
+  const tabsHtml = tabs.map(function(t){
+    return '<div class="tab'+(tab===t[0]?' active':'')+'" data-courier-tab="'+t[0]+'">'+t[1]+'</div>';
+  }).join('');
+
+  let body = '';
+  if(tab==='zones') body = zoneMatrixHtml(c);
+  else if(tab==='rates') body = rateMasterHtml(c);
+  else if(tab==='cities') body = cityMappingHtml(c);
+  else body = stateZoneMapHtml(c);
+
+  return (
+    topbar(c.name, 'Rate master · editable zone grid, overhead charges and city-to-zone mapping.',
+      '<button class="btn btn-outline btn-sm" data-action="go-couriers">← All couriers</button>') +
+    '<div class="tabs">'+tabsHtml+'</div>' +
+    '<input type="hidden" id="active-courier-id" value="'+c.id+'">' +
+    body
+  );
+}
+
+function zoneMatrixHtml(c){
+  const zones = c.zones;
+  const head = '<th>Pickup \\ Destination</th>' + zones.map(function(z){ return '<th>'+esc(z)+'</th>'; }).join('');
+  const rows = zones.map(function(zf){
+    const cells = zones.map(function(zt){
+      const v = (c.matrix[zf] && c.matrix[zf][zt]!=null) ? c.matrix[zf][zt] : '';
+      return '<td><input type="number" step="0.5" min="0" data-zm-from="'+esc(zf)+'" data-zm-to="'+esc(zt)+'" value="'+v+'"></td>';
+    }).join('');
+    return '<tr><td>'+esc(zf)+'</td>'+cells+'</tr>';
+  }).join('');
+
+  return (
+    '<div class="note-strip">Rates are ₹ per kilogram, pickup zone → destination zone. Change any cell then save — every future shipment on this courier uses the new grid immediately.</div>' +
+    '<div class="table-wrap" style="margin-bottom:14px;"><table class="zone-matrix-table"><thead><tr>'+head+'</tr></thead><tbody>'+rows+'</tbody></table></div>' +
+    '<div style="display:flex;gap:10px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;">' +
+      '<div style="display:flex;gap:8px;align-items:flex-end;">' +
+        '<div class="field" style="margin-bottom:0;"><label>Add zone</label><input type="text" id="new-zone-name" placeholder="e.g. NW" style="width:120px;"></div>' +
+        '<button class="btn btn-outline btn-sm" data-action="add-zone">Add zone</button>' +
+      '</div>' +
+      '<button class="btn btn-accent" data-action="save-zone-matrix">Save zone master</button>' +
+    '</div>'
+  );
+}
+
+function rateMasterHtml(c){
+  const oh = c.overheads;
+  function f(key,label,help,step){
+    return (
+      '<div class="field">' +
+        '<label>'+label+'</label>' +
+        '<input type="number" step="'+(step||'0.01')+'" id="oh-'+key+'" value="'+(oh[key]!=null?oh[key]:0)+'">' +
+        (help ? '<div class="helptext">'+help+'</div>' : '') +
+      '</div>'
+    );
+  }
+  return (
+    '<div class="grid-3">' +
+      '<div class="card">' +
+        '<h4 style="font-size:14.5px;margin-bottom:12px;">Base charges</h4>' +
+        f('docketCharge','Docket charge (₹ per LR)') +
+        f('minChargeableWt','Minimum chargeable weight (kg)') +
+        f('minChargeableAmt','Minimum chargeable amount (₹)') +
+        f('volumetricDivisor','Volumetric divisor', 'Chargeable vol. weight = (L×W×H cm) ÷ divisor') +
+      '</div>' +
+      '<div class="card">' +
+        '<h4 style="font-size:14.5px;margin-bottom:12px;">Surcharges</h4>' +
+        f('fscPercent','Fuel surcharge (%)') +
+        f('handlingThresholdKg','Handling charge applies at (kg ≥)') +
+        f('handlingPerKg','Handling charge (₹/kg)') +
+        f('handlingMin','Handling — minimum (₹)') +
+      '</div>' +
+      '<div class="card">' +
+        '<h4 style="font-size:14.5px;margin-bottom:12px;">ODA &amp; appointment</h4>' +
+        f('odaPerKg','ODA charge (₹/kg)') +
+        f('odaMin','ODA — minimum (₹)') +
+        f('appointmentPerKg','Appointment delivery (₹/kg)') +
+        f('appointmentMin','Appointment — minimum (₹)') +
+      '</div>' +
+      '<div class="card">' +
+        '<h4 style="font-size:14.5px;margin-bottom:12px;">Risk &amp; insurance</h4>' +
+        '<div class="field"><label>Default liability basis</label>' +
+          '<select id="oh-riskType">' +
+            '<option value="Owner"'+(oh.riskType==='Owner'?' selected':'')+'>Owner\'s risk</option>' +
+            '<option value="Carrier"'+(oh.riskType==='Carrier'?' selected':'')+'>Carrier\'s risk</option>' +
+          '</select>' +
+        '</div>' +
+        f('rovPercent','Risk cover (% of declared value)') +
+        f('rovMin','Risk cover — minimum (₹)') +
+      '</div>' +
+      '<div class="card">' +
+        '<h4 style="font-size:14.5px;margin-bottom:12px;">Cash &amp; freight-to-collect (B2C)</h4>' +
+        f('cashHandlingPercent','Cash handling (%) on COD value') +
+        f('cashHandlingMin','Cash handling — minimum (₹)') +
+        f('topayChargePerLR','To-pay charge (₹ per LR)') +
+      '</div>' +
+      '<div class="card">' +
+        '<h4 style="font-size:14.5px;margin-bottom:12px;">Demurrage &amp; tax</h4>' +
+        f('freeStorageDays','Free storage (days)', null, '1') +
+        f('demurragePerKg','Demurrage (₹/kg/day)') +
+        f('demurrageMin','Demurrage — minimum (₹)') +
+        f('gstPercent','GST (%)') +
+      '</div>' +
+      '<div class="card" style="border-color:var(--accent);background:#FBF3EE;">' +
+        '<h4 style="font-size:14.5px;margin-bottom:2px;">Your margin</h4>' +
+        '<div class="helptext" style="margin-bottom:12px;color:#8A5A22;">Hidden from vendors — folded quietly into "Base freight" on their invoices. Only admin sees this line item.</div>' +
+        f('marginPercent','Margin (% on cost)') +
+        f('marginFlat','Margin — flat add-on (₹ per shipment)') +
+      '</div>' +
+    '</div>' +
+    '<div style="margin-top:14px;"><button class="btn btn-accent" data-action="save-rate-master">Save rate master</button></div>'
+  );
+}
+
+function cityMappingHtml(c){
+  const filter = (App.cityFilter||'').toLowerCase();
+  const filtered = c.cities.filter(function(row){
+    if(!filter) return true;
+    return row.city.toLowerCase().indexOf(filter)>=0 || row.state.toLowerCase().indexOf(filter)>=0 || row.pin.indexOf(filter)>=0 || row.zone.toLowerCase().indexOf(filter)>=0;
+  });
+  const shown = filtered.slice(0,60);
+  const zoneOptions = c.zones.map(function(z){ return '<option value="'+esc(z)+'">'+esc(z)+'</option>'; }).join('');
+
+  const rows = shown.map(function(row, idx){
+    const realIdx = c.cities.indexOf(row);
+    return (
+      '<tr>' +
+        '<td>'+esc(row.city)+'</td>' +
+        '<td>'+esc(row.state)+'</td>' +
+        '<td class="mono">'+esc(row.pin)+'</td>' +
+        '<td><select data-city-idx="'+realIdx+'" class="city-zone-select">'+
+          c.zones.map(function(z){ return '<option value="'+esc(z)+'"'+(z===row.zone?' selected':'')+'>'+esc(z)+'</option>'; }).join('') +
+        '</select></td>' +
+        '<td><button class="btn btn-ghost btn-sm" data-action="delete-city" data-idx="'+realIdx+'">Remove</button></td>' +
+      '</tr>'
+    );
+  }).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px;">No cities match "'+esc(filter)+'".</td></tr>';
+
+  return (
+    '<div class="filter-bar">' +
+      '<input type="text" id="city-filter-input" placeholder="Filter by city, state, PIN or zone…" value="'+esc(App.cityFilter||'')+'" style="min-width:260px;">' +
+      '<button class="btn btn-outline btn-sm" data-action="apply-city-filter">Filter</button>' +
+      '<span class="doc-stamp" style="margin-left:auto;">'+filtered.length+' of '+c.cities.length+' cities'+(filtered.length>60?' · showing first 60':'')+'</span>' +
+    '</div>' +
+    '<div class="table-wrap" style="margin-bottom:16px;"><table><thead><tr><th>City</th><th>State</th><th>PIN</th><th>Zone</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>' +
+    '<div class="card">' +
+      '<h4 style="font-size:14.5px;margin-bottom:12px;">Add a city</h4>' +
+      '<div class="grid-3">' +
+        '<div class="field" style="margin-bottom:0;"><label>City</label><input type="text" id="new-city-name"></div>' +
+        '<div class="field" style="margin-bottom:0;"><label>State</label><input type="text" id="new-city-state"></div>' +
+        '<div class="field" style="margin-bottom:0;"><label>PIN code</label><input type="text" id="new-city-pin"></div>' +
+      '</div>' +
+      '<div class="grid-2" style="margin-top:12px;align-items:flex-end;">' +
+        '<div class="field" style="margin-bottom:0;"><label>Zone</label><select id="new-city-zone">'+zoneOptions+'</select></div>' +
+        '<button class="btn btn-accent" data-action="add-city">Add city</button>' +
+      '</div>' +
+    '</div>'
+  );
+}
+
+function stateZoneMapHtml(c){
+  const states = Object.keys(c.stateZoneMap||{}).sort();
+  const zoneOptions = c.zones.map(function(z){ return '<option value="'+esc(z)+'">'+esc(z)+'</option>'; }).join('');
+  const rows = states.map(function(state){
+    const currentZone = c.stateZoneMap[state];
+    return (
+      '<tr>' +
+        '<td>'+esc(state)+'</td>' +
+        '<td><select data-state-name="'+esc(state)+'" class="state-zone-select">'+
+          c.zones.map(function(z){ return '<option value="'+esc(z)+'"'+(z===currentZone?' selected':'')+'>'+esc(z)+'</option>'; }).join('') +
+        '</select></td>' +
+      '</tr>'
+    );
+  }).join('');
+
+  return (
+    '<div class="note-strip">When a vendor types a PIN code that isn\'t already an exact match under City Mapping, the courier looks up the state for that PIN (using standard postal-circle ranges) and bills using the zone set here. This covers PIN codes across all of India as a provisional fallback — add exact cities under City Mapping for anything that needs a confirmed match.</div>' +
+    '<div class="table-wrap" style="margin-bottom:14px;"><table><thead><tr><th>State / UT</th><th>Fallback zone</th></tr></thead><tbody>'+rows+'</tbody></table></div>' +
+    '<button class="btn btn-accent" data-action="save-state-zones">Save state fallback zones</button>'
+  );
+}
+
+/* ================= Vendor: Dashboard ================= */
+function viewVendorDashboard(u){
+  const invs = DB.invoices.filter(function(i){ return i.vendorId===u.id; });
+  const total = invs.reduce(function(s,i){ return s+i.total; }, 0);
+  const balance = u.walletBalance || 0;
+  const recent = invs.slice(-6).reverse();
+  const recentRows = recent.length ? recent.map(invoiceRowHtml).join('') :
+    '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:26px;">No shipments booked yet — start with "New Shipment".</td></tr>';
+
+  return (
+    topbar('Overview', esc(u.vendorName||u.name)+' · vendor account',
+      '<button class="btn btn-outline btn-sm" data-nav="wallet">Wallet: '+fmt(balance)+'</button>' +
+      '<button class="btn btn-accent btn-sm" data-nav="new-shipment">+ New shipment</button>') +
+    '<div class="stat-grid">' +
+      '<div class="stat-card"><div class="label">WALLET BALANCE</div><div class="value">'+fmt(balance)+'</div><div class="sub"><button class="link-btn" data-nav="wallet">Recharge</button></div></div>' +
+      '<div class="stat-card"><div class="label">TOTAL BILLED</div><div class="value">'+fmt(total)+'</div><div class="sub">'+invs.length+' invoice(s)</div></div>' +
+      '<div class="stat-card"><div class="label">B2B SHIPMENTS</div><div class="value">'+invs.filter(function(i){return i.type==='B2B';}).length+'</div></div>' +
+      '<div class="stat-card"><div class="label">B2C SHIPMENTS</div><div class="value">'+invs.filter(function(i){return i.type==='B2C';}).length+'</div></div>' +
+    '</div>' +
+    '<div class="section">' +
+      '<div class="section-head"><h3>Recent invoices</h3><button class="btn btn-outline btn-sm" data-nav="invoices">View all</button></div>' +
+      '<div class="table-wrap"><table><thead><tr><th>Docket</th><th>Vendor</th><th>Courier</th><th>Route</th><th>Type</th><th>Amount</th><th>Status</th></tr></thead><tbody>'+recentRows+'</tbody></table></div>' +
+    '</div>'
+  );
+}
+
+/* ================= Invoices list (admin sees all, vendor sees own) ================= */
+function viewInvoices(u){
+  let invs = u.role==='admin' ? DB.invoices.slice() : DB.invoices.filter(function(i){ return i.vendorId===u.id; });
+  const f = App.invoiceFilters || {};
+
+  if(f.vendorId) invs = invs.filter(function(i){ return i.vendorId===f.vendorId; });
+  if(f.courierId) invs = invs.filter(function(i){ return i.courierId===f.courierId; });
+  if(f.type) invs = invs.filter(function(i){ return i.type===f.type; });
+  if(f.status) invs = invs.filter(function(i){ return i.status===f.status; });
+  invs = invs.slice().reverse();
+
+  const vendorOptions = u.role==='admin' ? DB.vendors.map(function(v){
+    return '<option value="'+v.id+'"'+(f.vendorId===v.id?' selected':'')+'>'+esc(v.vendorName||v.name)+'</option>';
+  }).join('') : '';
+  const courierOptions = DB.couriers.map(function(c){ return '<option value="'+c.id+'"'+(f.courierId===c.id?' selected':'')+'>'+esc(c.name)+'</option>'; }).join('');
+
+  const total = invs.reduce(function(s,i){ return s+i.total; }, 0);
+
+  const rows = invs.length ? invs.map(invoiceRowHtml).join('') :
+    '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:30px;">No invoices match these filters.</td></tr>';
+
+  return (
+    topbar(u.role==='admin' ? 'All invoices' : 'My invoices', invs.length+' invoice(s) · '+fmt(total)+' total',
+      u.role==='vendor' ? '<button class="btn btn-accent btn-sm" data-nav="new-shipment">+ New shipment</button>' : '') +
+    '<div class="filter-bar">' +
+      (u.role==='admin' ? '<select id="f-vendor"><option value="">All vendors</option>'+vendorOptions+'</select>' : '') +
+      '<select id="f-courier"><option value="">All couriers</option>'+courierOptions+'</select>' +
+      '<select id="f-type"><option value="">B2B &amp; B2C</option><option value="B2B"'+(f.type==='B2B'?' selected':'')+'>B2B only</option><option value="B2C"'+(f.type==='B2C'?' selected':'')+'>B2C only</option></select>' +
+      '<select id="f-status"><option value="">Any status</option><option value="Paid"'+(f.status==='Paid'?' selected':'')+'>Paid</option><option value="Unpaid"'+(f.status==='Unpaid'?' selected':'')+'>Unpaid</option></select>' +
+      '<button class="btn btn-outline btn-sm" data-action="apply-invoice-filter">Apply</button>' +
+      '<button class="btn btn-ghost btn-sm" data-action="clear-invoice-filter">Clear</button>' +
+    '</div>' +
+    '<div class="table-wrap"><table><thead><tr><th>Docket</th><th>Vendor</th><th>Courier</th><th>Route</th><th>Type</th><th>Amount</th><th>Status</th></tr></thead><tbody>'+rows+'</tbody></table></div>'
+  );
+}
+
+/* ================= Vendor: New shipment ================= */
+function viewNewShipment(u){
+  const type = App.shipmentType || 'B2B';
+  const couriers = DB.couriers;
+  if(!couriers.length){
+    return topbar('New shipment','') + '<div class="empty-state"><h4>No couriers configured yet.</h4><p>Ask your administrator to add a courier before booking shipments.</p></div>';
+  }
+  const courierOptions = couriers.map(function(c){ return '<option value="'+c.id+'">'+esc(c.name)+'</option>'; }).join('');
+  const balance = u.walletBalance || 0;
+
+  return (
+    topbar('New shipment', 'Rates apply automatically from the selected courier\'s zone &amp; rate master.',
+      '<span class="doc-stamp" style="align-self:center;">Wallet: <strong style="color:var(--ink);">'+fmt(balance)+'</strong></span> <button class="btn btn-outline btn-sm" data-nav="wallet">Recharge</button>') +
+    '<div class="pill-toggle no-print" style="margin-bottom:18px;">' +
+      '<div class="pill-opt'+(type==='B2B'?' active':'')+'" data-set-shipment-type="B2B">B2B</div>' +
+      '<div class="pill-opt'+(type==='B2C'?' active':'')+'" data-set-shipment-type="B2C">B2C</div>' +
+    '</div>' +
+    '<div class="grid-2">' +
+      '<div class="card">' +
+        '<h4 style="font-size:15px;margin-bottom:14px;">Consignment details</h4>' +
+        '<div class="field"><label>Courier</label><select id="ns-courier">'+courierOptions+'</select></div>' +
+        '<div class="field"><label>'+(type==='B2B'?'Receiving business / consignee':'Customer name')+'</label><input type="text" id="ns-consignee" placeholder="e.g. '+(type==='B2B'?'Big Cart Warehouse, Coimbatore':'Priya Ramesh')+'"></div>' +
+        '<div class="grid-2">' +
+          '<div class="field"><label>Pickup city or PIN code</label><input type="text" id="ns-source-city" list="dl-cities" placeholder="e.g. Chennai or 600001"></div>' +
+          '<div class="field"><label>Destination city or PIN code</label><input type="text" id="ns-dest-city" list="dl-cities" placeholder="e.g. Tirupur or 641601"></div>' +
+        '</div>' +
+        '<div class="grid-2">' +
+          '<div class="field"><label>Actual weight (kg)</label><input type="number" step="0.1" min="0" id="ns-weight" value="1"></div>' +
+          '<div class="field"><label>Declared value (₹, optional)</label><input type="number" step="1" min="0" id="ns-declared-value" placeholder="for risk cover"></div>' +
+        '</div>' +
+        '<div class="field"><label>Dimensions — L × W × H (cm, optional)</label>' +
+          '<div style="display:flex;gap:8px;">' +
+            '<input type="number" step="0.5" min="0" id="ns-l" placeholder="L">' +
+            '<input type="number" step="0.5" min="0" id="ns-w" placeholder="W">' +
+            '<input type="number" step="0.5" min="0" id="ns-h" placeholder="H">' +
+          '</div>' +
+          '<div class="helptext">Used to work out volumetric weight — the higher of actual and volumetric weight is billed.</div>' +
+        '</div>' +
+        (type==='B2C' ? (
+          '<div class="grid-2">' +
+            '<div class="field"><label>Cash on delivery amount (₹)</label><input type="number" step="1" min="0" id="ns-cod" placeholder="0 if prepaid"></div>' +
+            '<div class="field" style="display:flex;align-items:flex-end;"><label class="checkbox-row" style="margin-bottom:8px;"><input type="checkbox" id="ns-topay"> Freight to collect (to-pay)</label></div>' +
+          '</div>'
+        ) : '') +
+        '<div class="checkbox-row"><input type="checkbox" id="ns-oda"> Destination is an Outside Delivery Area (ODA) pincode</div>' +
+        '<div class="checkbox-row"><input type="checkbox" id="ns-appointment"> Appointment / mall delivery required</div>' +
+        '<div class="checkbox-row"><input type="checkbox" id="ns-carrier-risk"> Insure at carrier\'s risk (adds risk cover charge on declared value)</div>' +
+      '</div>' +
+      '<div>' +
+        '<div class="card" id="ns-preview">'+previewEmptyHtml()+'</div>' +
+        '<button class="btn btn-accent" style="width:100%;margin-top:12px;" data-action="submit-shipment" id="ns-submit-btn">Save &amp; generate invoice</button>' +
+      '</div>' +
+    '</div>'
+  );
+}
+
+function readShipmentForm(){
+  function val(id){ const e = document.getElementById(id); return e ? e.value : ''; }
+  function num(id){ const v = parseFloat(val(id)); return isNaN(v) ? 0 : v; }
+  function chk(id){ const e = document.getElementById(id); return e ? e.checked : false; }
+  return {
+    courierId: val('ns-courier'),
+    consignee: val('ns-consignee'),
+    sourceCityName: val('ns-source-city'),
+    destCityName: val('ns-dest-city'),
+    actualWt: num('ns-weight'),
+    declaredValue: num('ns-declared-value'),
+    l: num('ns-l'), w: num('ns-w'), h: num('ns-h'),
+    codAmount: document.getElementById('ns-cod') ? num('ns-cod') : 0,
+    topay: chk('ns-topay'),
+    isODA: chk('ns-oda'),
+    isAppointment: chk('ns-appointment'),
+    carrierRisk: chk('ns-carrier-risk')
+  };
+}
+
+function previewEmptyHtml(){
+  return '<h4 style="font-size:15px;margin-bottom:10px;">Freight estimate</h4><div class="empty-note">Fill in the consignment details to see the calculated charges.</div>';
+}
+
+/* Debounced, server-driven preview — the server computes the real cost
+   (margin included but hidden) so what's shown here always matches what
+   gets charged. */
+let previewSeq = 0;
+let previewTimer = null;
+function updateShipmentPreview(){
+  clearTimeout(previewTimer);
+  previewTimer = setTimeout(runShipmentPreview, 350);
+}
+
+async function runShipmentPreview(){
+  const mySeq = ++previewSeq;
+  const prevEl = document.getElementById('ns-preview');
+  if(!prevEl) return;
+  const f = readShipmentForm();
+  if(!f.courierId || !f.sourceCityName || !f.destCityName || !f.actualWt){
+    prevEl.innerHTML = previewEmptyHtml();
+    return;
+  }
+  try{
+    const result = await api('POST', '/invoices/preview', {
+      courierId: f.courierId, type: App.shipmentType, sourceCityName: f.sourceCityName, destCityName: f.destCityName,
+      actualWt: f.actualWt, dims: {l:f.l,w:f.w,h:f.h}, isODA: f.isODA, isAppointment: f.isAppointment,
+      carrierRisk: f.carrierRisk, declaredValue: f.declaredValue, codAmount: f.codAmount, topay: f.topay
+    });
+    if(mySeq !== previewSeq) return; // a newer request has since started
+    const u = currentUser();
+    const balance = u ? (u.walletBalance||0) : 0;
+    const calc = result.breakdown;
+    let balanceNote = '';
+    if(calc.total > balance + 0.001){
+      balanceNote = '<div class="note-strip" style="background:var(--danger-bg);border-color:#E3B7AE;color:var(--danger);">Wallet balance '+fmt(balance)+' is short by '+fmt(calc.total-balance)+' for this shipment. <button class="link-btn" data-nav="wallet" style="color:var(--danger);">Recharge now</button></div>';
+    }
+    let pinNote = '';
+    if(result.sourceMatch==='pincode' || result.destMatch==='pincode'){
+      pinNote = '<div class="helptext" style="margin-bottom:10px;">Zone derived from PIN code'+(result.sourceMatch==='pincode'&&result.destMatch==='pincode'?'s':'')+' — add as a named city under City Mapping for a confirmed match.</div>';
+    }
+    prevEl.innerHTML = (
+      '<h4 style="font-size:15px;margin-bottom:4px;">Freight estimate</h4>' +
+      '<div class="doc-stamp" style="margin-bottom:8px;"><span class="zone-chip">'+esc(result.sourceZone)+'</span> → <span class="zone-chip">'+esc(result.destZone)+'</span> · rate '+fmt(calc.rate)+'/kg · chargeable '+fmtWt(calc.chargeableWt)+' kg</div>' +
+      pinNote +
+      balanceNote +
+      breakdownHtml(calc)
+    );
+  }catch(e){
+    if(mySeq !== previewSeq) return;
+    prevEl.innerHTML = '<h4 style="font-size:15px;margin-bottom:10px;">Freight estimate</h4><div class="note-strip">'+esc(e.message)+'</div>';
+  }
+}
+
+function breakdownHtml(calc){
+  function row(lbl, val, always){
+    if(!always && !val) return '';
+    return '<div class="breakdown-row"><span class="lbl">'+lbl+'</span><span>'+fmt(val)+'</span></div>';
+  }
+  return (
+    row('Base freight', calc.baseFreight, true) +
+    row('Docket charge', calc.docket) +
+    row('Fuel surcharge', calc.fsc) +
+    row('Handling charge', calc.handling) +
+    row('ODA charge', calc.oda) +
+    row('Appointment delivery', calc.appointment) +
+    row('Risk cover (ROV)', calc.rov) +
+    row('Cash handling (COD)', calc.cashHandling) +
+    row('To-pay charge', calc.topay) +
+    (calc.margin != null ? row('Margin', calc.margin) : '') +
+    row('GST', calc.gst, true) +
+    '<div class="breakdown-row total"><span class="lbl">Total payable</span><span>'+fmt(calc.total)+'</span></div>'
+  );
+}
+
+/* ================= Invoice detail ================= */
+function viewInvoiceDetail(id, u){
+  const inv = DB.currentInvoice;
+  if(!inv || inv.id !== id) return topbar('Invoice not found','') + '<div class="empty-state"><h4>This invoice could not be found.</h4></div>';
+
+  const canManage = u.role==='admin';
+  return (
+    topbar(inv.invoiceNo, inv.type+' consignment · '+esc(inv.courierName),
+      '<button class="btn btn-outline btn-sm" data-action="go-back-invoices">← Back</button>' +
+      '<button class="btn btn-outline btn-sm" onclick="window.print()">Print / save PDF</button>' +
+      (canManage ? '<button class="btn btn-danger btn-sm" data-action="delete-invoice" data-id="'+inv.id+'">Delete &amp; refund</button>' : '')
+    ) +
+    '<div class="invoice-doc panel" style="padding:30px;">' +
+      '<div class="invoice-head">' +
+        '<div>' +
+          '<h3 style="font-size:22px;">'+esc(inv.courierName)+'</h3>' +
+          '<div class="doc-stamp">Zone-based freight invoice</div>' +
+        '</div>' +
+        '<div style="text-align:right;">' +
+          '<div class="num">'+esc(inv.invoiceNo)+'</div>' +
+          '<div class="doc-stamp">'+fmtDate(inv.date)+'</div>' +
+          '<span class="badge badge-'+(inv.status==='Paid'?'paid':'unpaid')+'" style="margin-top:6px;display:inline-block;">'+inv.status+(inv.paymentMode?' · '+inv.paymentMode:'')+'</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="addr-grid">' +
+        '<div class="addr-block"><h5>PICKUP · '+esc(inv.sourceZone)+'</h5><div class="city">'+esc(inv.sourceCity)+'</div></div>' +
+        '<div class="addr-block"><h5>DESTINATION · '+esc(inv.destZone)+'</h5><div class="city">'+esc(inv.destCity)+'</div></div>' +
+      '</div>' +
+      '<div class="grid-2" style="margin-bottom:18px;">' +
+        '<div><div class="doc-stamp">BILLED TO (VENDOR)</div><div style="font-weight:600;">'+esc(inv.vendorName)+'</div></div>' +
+        '<div><div class="doc-stamp">'+(inv.type==='B2B'?'CONSIGNEE':'CUSTOMER')+'</div><div style="font-weight:600;">'+esc(inv.consignee||'—')+'</div></div>' +
+      '</div>' +
+      '<div class="grid-3" style="margin-bottom:18px;">' +
+        '<div><div class="doc-stamp">TYPE</div><span class="badge badge-'+(inv.type==='B2B'?'b2b':'b2c')+'">'+inv.type+'</span></div>' +
+        '<div><div class="doc-stamp">ACTUAL WEIGHT</div>'+fmtWt(inv.actualWt)+' kg</div>' +
+        '<div><div class="doc-stamp">CHARGEABLE WEIGHT</div>'+fmtWt(inv.breakdown.chargeableWt)+' kg</div>' +
+      '</div>' +
+      '<h4 style="font-size:14px;margin-bottom:8px;">Charge breakdown</h4>' +
+      '<div class="card">'+breakdownHtml(inv.breakdown)+'</div>' +
+      '<div class="doc-stamp" style="margin-top:20px;">Rate applied: ₹'+inv.breakdown.rate+'/kg · '+esc(inv.courierName)+' zone master · Generated via BCI Express app</div>' +
+    '</div>'
+  );
+}
+
+/* ================= Wallet: Vendor view ================= */
+function viewWallet(u){
+  const balance = u.walletBalance || 0;
+  const paymentsEnabled = !!DB.paymentsEnabled;
+  const tx = DB.walletTx.slice().reverse();
+  const rows = tx.length ? tx.map(walletTxRow).join('') :
+    '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:26px;">No wallet activity yet.</td></tr>';
+
+  const myRequests = DB.rechargeRequests.filter(function(r){ return r.vendorId===u.id; }).slice().reverse();
+  const requestRows = myRequests.length ? myRequests.map(rechargeRequestRow).join('') :
+    '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px;">No requests yet.</td></tr>';
+
+  const rechargePanel = paymentsEnabled ? (
+    '<div class="field"><label>Recharge amount (₹)</label><input type="number" min="1" step="1" id="wr-amount" placeholder="e.g. 5000"></div>' +
+    '<button class="btn btn-accent" style="width:100%;" data-action="recharge-wallet" id="wr-pay-btn">Pay &amp; recharge</button>' +
+    '<div class="helptext" style="margin-top:8px;">Secured by Razorpay — pick UPI, card or net banking on the payment screen. Every payment is verified against Razorpay\'s signature on our server before your wallet is credited.</div>'
+  ) : (
+    '<div class="note-strip">Automatic checkout isn\'t connected yet. Pay your admin directly (UPI / bank transfer / Razorpay link they share), then submit the details below — your admin will verify and approve it.</div>' +
+    '<div class="field"><label>Amount paid (₹)</label><input type="number" min="1" step="1" id="rr-amount" placeholder="e.g. 5000"></div>' +
+    '<div class="field"><label>Payment method</label>' +
+      '<select id="rr-method">' +
+        '<option value="UPI">UPI</option>' +
+        '<option value="Bank transfer">Bank transfer</option>' +
+        '<option value="Razorpay link">Razorpay payment link</option>' +
+        '<option value="Cash">Cash</option>' +
+      '</select>' +
+    '</div>' +
+    '<div class="field"><label>Payment reference (UTR / transaction / payment ID)</label><input type="text" id="rr-ref" placeholder="e.g. 402917663281"></div>' +
+    '<div class="field"><label>Note (optional)</label><input type="text" id="rr-note" placeholder="anything your admin should know"></div>' +
+    '<button class="btn btn-accent" style="width:100%;" data-action="submit-recharge-request">Submit for approval</button>'
+  );
+
+  return (
+    topbar('Wallet', 'Recharge your wallet — every shipment is billed straight from this balance.') +
+    '<div class="grid-2">' +
+      '<div class="card">' +
+        '<div class="label" style="font-family:var(--font-mono);font-size:10.5px;color:var(--muted);letter-spacing:0.4px;margin-bottom:8px;">CURRENT BALANCE</div>' +
+        '<div style="font-family:var(--font-display);font-size:40px;font-weight:600;margin-bottom:18px;">'+fmt(balance)+'</div>' +
+        rechargePanel +
+      '</div>' +
+      '<div class="card">' +
+        '<h4 style="font-size:14.5px;margin-bottom:10px;">How wallet billing works</h4>' +
+        '<div class="breakdown-row"><span class="lbl">1. Recharge</span><span>'+(paymentsEnabled?'Pay via Razorpay — verified automatically.':'Pay your admin, then submit the reference for approval.')+'</span></div>' +
+        '<div class="breakdown-row"><span class="lbl">2. Book a shipment</span><span>Freight is calculated automatically by zone.</span></div>' +
+        '<div class="breakdown-row"><span class="lbl">3. Auto-billed</span><span>The invoice amount is deducted from your wallet the moment you save it.</span></div>' +
+        '<div class="breakdown-row"><span class="lbl">4. Low balance</span><span>If your wallet can\'t cover a shipment, booking is blocked until you recharge.</span></div>' +
+      '</div>' +
+    '</div>' +
+    (paymentsEnabled ? '' : (
+      '<div class="section">' +
+        '<div class="section-head"><h3>My recharge requests</h3></div>' +
+        '<div class="table-wrap"><table><thead><tr><th>Date</th><th>Amount</th><th>Method</th><th>Reference</th><th>Status</th></tr></thead><tbody>'+requestRows+'</tbody></table></div>' +
+      '</div>'
+    )) +
+    '<div class="section">' +
+      '<div class="section-head"><h3>Wallet history</h3></div>' +
+      '<div class="table-wrap"><table><thead><tr><th>Date</th><th>Description</th><th>Amount</th><th>Balance after</th></tr></thead><tbody>'+rows+'</tbody></table></div>' +
+    '</div>'
+  );
+}
+
+function walletTxRow(t){
+  const isCredit = t.amount >= 0;
+  const label = walletTxLabel(t.type);
+  return (
+    '<tr>' +
+      '<td class="mono">'+fmtDate(t.date)+'</td>' +
+      '<td>'+esc(label)+(t.note ? ' <span class="doc-stamp">· '+esc(t.note)+'</span>' : '')+
+        (t.invoiceId ? ' <button class="btn btn-ghost btn-sm" data-action="open-invoice" data-id="'+t.invoiceId+'">view invoice</button>' : '') +
+      '</td>' +
+      '<td class="mono" style="color:'+(isCredit?'var(--success)':'var(--danger)')+';font-weight:600;">'+(isCredit?'+':'')+fmt(t.amount)+'</td>' +
+      '<td class="mono">'+fmt(t.balanceAfter)+'</td>' +
+    '</tr>'
+  );
+}
+function walletTxLabel(type){
+  return {
+    'recharge':'Wallet recharge',
+    'debit':'Shipment billed',
+    'refund':'Refund',
+    'adjust-credit':'Admin credit',
+    'adjust-debit':'Admin debit'
+  }[type] || type;
+}
+
+/* ================= Wallet: Admin view of a single vendor ================= */
+function viewVendorWalletDetail(vendorId){
+  const data = DB.viewedVendor;
+  if(!data || !data.vendor) return topbar('Vendor not found','') + '<div class="empty-state"><h4>This vendor account no longer exists.</h4></div>';
+  const v = data.vendor;
+  const tx = data.transactions.slice().reverse();
+  const rows = tx.length ? tx.map(walletTxRow).join('') :
+    '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:26px;">No wallet activity yet.</td></tr>';
+
+  return (
+    topbar(esc(v.vendorName||v.name)+' — wallet', 'Manual credit/debit adjustments and full transaction history.',
+      '<button class="btn btn-outline btn-sm" data-action="go-vendors">← All vendors</button>') +
+    '<input type="hidden" id="active-vendor-id" value="'+v.id+'">' +
+    '<div class="grid-2">' +
+      '<div class="card">' +
+        '<div class="label" style="font-family:var(--font-mono);font-size:10.5px;color:var(--muted);letter-spacing:0.4px;margin-bottom:8px;">CURRENT BALANCE</div>' +
+        '<div style="font-family:var(--font-display);font-size:40px;font-weight:600;">'+fmt(v.walletBalance||0)+'</div>' +
+      '</div>' +
+      '<div class="card">' +
+        '<h4 style="font-size:14.5px;margin-bottom:10px;">Manual adjustment</h4>' +
+        '<div class="grid-2">' +
+          '<div class="field"><label>Amount (₹)</label><input type="number" min="0" step="1" id="wa-amount"></div>' +
+          '<div class="field"><label>Direction</label><select id="wa-direction"><option value="credit">Credit (add)</option><option value="debit">Debit (deduct)</option></select></div>' +
+        '</div>' +
+        '<div class="field"><label>Note</label><input type="text" id="wa-note" placeholder="e.g. Bank transfer confirmed 04 Sep"></div>' +
+        '<button class="btn btn-accent" data-action="admin-adjust-wallet">Apply adjustment</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="section">' +
+      '<div class="section-head"><h3>Transaction history</h3></div>' +
+      '<div class="table-wrap"><table><thead><tr><th>Date</th><th>Description</th><th>Amount</th><th>Balance after</th></tr></thead><tbody>'+rows+'</tbody></table></div>' +
+    '</div>'
+  );
+}
+
+function rechargeRequestRow(r){
+  const badgeClass = r.status==='Approved' ? 'badge-paid' : (r.status==='Rejected' ? 'badge-unpaid' : 'badge-b2c');
+  return (
+    '<tr>' +
+      '<td class="mono">'+fmtDate(r.requestedAt)+'</td>' +
+      '<td class="mono">'+fmt(r.amount)+'</td>' +
+      '<td>'+esc(r.method)+'</td>' +
+      '<td class="mono">'+esc(r.ref||'—')+'</td>' +
+      '<td><span class="badge '+badgeClass+'">'+esc(r.status)+'</span>'+(r.status==='Rejected' && r.decisionNote ? ' <span class="doc-stamp">· '+esc(r.decisionNote)+'</span>' : '')+'</td>' +
+    '</tr>'
+  );
+}
+
+/* ================= Admin: Recharge requests ================= */
+function viewRechargeRequests(){
+  const all = DB.rechargeRequests.slice().reverse();
+  const pending = all.filter(function(r){ return r.status==='Pending'; });
+  const decided = all.filter(function(r){ return r.status!=='Pending'; });
+
+  function row(r, actionable){
+    return (
+      '<tr>' +
+        '<td class="mono">'+fmtDate(r.requestedAt)+'</td>' +
+        '<td><strong>'+esc(r.vendorName)+'</strong></td>' +
+        '<td class="mono">'+fmt(r.amount)+'</td>' +
+        '<td>'+esc(r.method)+'</td>' +
+        '<td class="mono">'+esc(r.ref||'—')+'</td>' +
+        '<td>'+esc(r.note||'—')+'</td>' +
+        (actionable ?
+          '<td style="display:flex;gap:6px;"><button class="btn btn-accent btn-sm" data-action="approve-recharge" data-id="'+r.id+'">Approve</button><button class="btn btn-ghost btn-sm" data-action="reject-recharge" data-id="'+r.id+'">Reject</button></td>'
+          : '<td><span class="badge '+(r.status==='Approved'?'badge-paid':'badge-unpaid')+'">'+esc(r.status)+'</span>'+(r.decisionNote?' <span class="doc-stamp">· '+esc(r.decisionNote)+'</span>':'')+'</td>'
+        ) +
+      '</tr>'
+    );
+  }
+
+  const pendingRows = pending.length ? pending.map(function(r){ return row(r, true); }).join('') :
+    '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:22px;">No pending requests.</td></tr>';
+  const decidedRows = decided.length ? decided.map(function(r){ return row(r, false); }).join('') :
+    '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:22px;">No decided requests yet.</td></tr>';
+
+  return (
+    topbar('Recharge requests', 'Vendor-submitted wallet top-ups awaiting manual confirmation — check your payment record before approving.') +
+    '<div class="section">' +
+      '<div class="section-head"><h3>Pending ('+pending.length+')</h3></div>' +
+      '<div class="table-wrap"><table><thead><tr><th>Date</th><th>Vendor</th><th>Amount</th><th>Method</th><th>Reference</th><th>Note</th><th></th></tr></thead><tbody>'+pendingRows+'</tbody></table></div>' +
+    '</div>' +
+    '<div class="section">' +
+      '<div class="section-head"><h3>History</h3></div>' +
+      '<div class="table-wrap"><table><thead><tr><th>Date</th><th>Vendor</th><th>Amount</th><th>Method</th><th>Reference</th><th>Note</th><th>Status</th></tr></thead><tbody>'+decidedRows+'</tbody></table></div>' +
+    '</div>'
+  );
+}
+
+/* ================= Admin: Notifications ================= */
+function viewNotifications(){
+  const all = DB.notifications.slice().reverse();
+  const unreadCount = all.filter(function(n){ return !n.read; }).length;
+  const canNotify = (typeof Notification !== 'undefined');
+  const permission = canNotify ? Notification.permission : 'unsupported';
+
+  const rows = all.length ? all.map(function(n){
+    return (
+      '<div class="card row-hover" style="cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:14px;'+(n.read?'opacity:0.7;':'border-left:3px solid var(--accent);')+'" data-action="open-notification" data-id="'+n.id+'"'+(n.invoiceId?' data-invoice-id="'+n.invoiceId+'"':'')+'>' +
+        '<div>' +
+          '<div style="font-weight:'+(n.read?'500':'700')+';font-size:13.5px;margin-bottom:3px;">'+esc(n.title)+'</div>' +
+          '<div style="font-size:13px;color:var(--muted);">'+esc(n.message)+'</div>' +
+        '</div>' +
+        '<div class="doc-stamp" style="white-space:nowrap;">'+fmtDate(n.createdAt)+'</div>' +
+      '</div>'
+    );
+  }).join('') : '<div class="empty-state"><h4>No notifications yet</h4><p>You\'ll see an alert here the moment a vendor books a shipment or requests a recharge.</p></div>';
+
+  return (
+    topbar('Notifications', unreadCount+' unread',
+      (unreadCount ? '<button class="btn btn-outline btn-sm" data-action="mark-all-read">Mark all as read</button>' : '') +
+      (canNotify && permission!=='granted' ? '<button class="btn btn-outline btn-sm" data-action="enable-desktop-alerts">Enable desktop alerts</button>' : '') +
+      (canNotify && permission==='granted' ? '<span class="doc-stamp" style="align-self:center;">Desktop alerts on</span>' : '')
+    ) +
+    '<div style="display:flex;flex-direction:column;gap:8px;">'+rows+'</div>'
+  );
+}
+
+/* ================= Event delegation ================= */
+function onDocClick(e){
+  const navEl = e.target.closest('[data-nav]');
+  if(navEl){ goTo(navEl.getAttribute('data-nav')); return; }
+
+  const roleOpt = e.target.closest('.role-opt');
+  if(roleOpt){
+    App.newUserRole = roleOpt.getAttribute('data-role');
+    render();
+    return;
+  }
+
+  const courierTab = e.target.closest('[data-courier-tab]');
+  if(courierTab){ App.courierTab = courierTab.getAttribute('data-courier-tab'); render(); return; }
+
+  const shipType = e.target.closest('[data-set-shipment-type]');
+  if(shipType){ App.shipmentType = shipType.getAttribute('data-set-shipment-type'); render(); return; }
+
+  const actionEl = e.target.closest('[data-action]');
+  if(!actionEl) return;
+  const action = actionEl.getAttribute('data-action');
+  const id = actionEl.getAttribute('data-id');
+
+  if(action==='logout'){ clearToken(); DB.me=null; App.authMode='signin'; App.authError=''; render(); }
+  else if(action==='go-signup'){ App.authMode='signup'; App.authError=''; render(); }
+  else if(action==='go-signin'){ App.authMode='signin'; App.authError=''; render(); }
+  else if(action==='change-server'){ clearApiBase(); clearToken(); DB.me=null; render(); }
+  else if(action==='open-invoice'){ goTo('invoice-detail', {id:id}); }
+  else if(action==='go-back-invoices'){ goTo('invoices'); }
+  else if(action==='go-couriers'){ goTo('couriers'); }
+  else if(action==='go-vendors'){ goTo('vendors'); }
+  else if(action==='open-courier'){ App.courierTab='zones'; App.cityFilter=''; goTo('courier-detail', {id:id}); }
+  else if(action==='add-courier'){ handleAddCourier(); }
+  else if(action==='delete-courier'){ handleDeleteCourier(id); }
+  else if(action==='save-zone-matrix'){ handleSaveZoneMatrix(); }
+  else if(action==='add-zone'){ handleAddZone(); }
+  else if(action==='save-rate-master'){ handleSaveRateMaster(); }
+  else if(action==='save-state-zones'){ handleSaveStateZones(); }
+  else if(action==='apply-city-filter'){ App.cityFilter = (document.getElementById('city-filter-input')||{}).value || ''; render(); }
+  else if(action==='add-city'){ handleAddCity(); }
+  else if(action==='delete-city'){ handleDeleteCity(parseInt(actionEl.getAttribute('data-idx'),10)); }
+  else if(action==='filter-vendor-invoices'){ App.invoiceFilters = {vendorId:id}; goTo('invoices'); }
+  else if(action==='apply-invoice-filter'){ applyInvoiceFilterFromDOM(); }
+  else if(action==='clear-invoice-filter'){ App.invoiceFilters = {}; goTo('invoices'); }
+  else if(action==='submit-shipment'){ handleSubmitShipment(); }
+  else if(action==='delete-invoice'){ handleDeleteInvoice(id); }
+  else if(action==='open-vendor-wallet'){ goTo('vendor-wallet', {id:id}); }
+  else if(action==='recharge-wallet'){ handleRecharge(); }
+  else if(action==='admin-adjust-wallet'){ handleAdminWalletAdjust(); }
+  else if(action==='submit-recharge-request'){ handleRequestRecharge(); }
+  else if(action==='approve-recharge'){ handleApproveRecharge(id); }
+  else if(action==='reject-recharge'){ handleRejectRecharge(id); }
+  else if(action==='open-notification'){ handleOpenNotification(id, actionEl.getAttribute('data-invoice-id')); }
+  else if(action==='mark-all-read'){ handleMarkAllNotificationsRead(); }
+  else if(action==='enable-desktop-alerts'){ handleEnableDesktopAlerts(); }
+}
+
+function onDocSubmit(e){
+  if(e.target && e.target.id==='connect-server-form'){ e.preventDefault(); handleConnectServer(); }
+  else if(e.target && e.target.id==='signup-form'){ e.preventDefault(); handleSignup(); }
+  else if(e.target && e.target.id==='signin-form'){ e.preventDefault(); handleSignin(); }
+}
+
+function onDocChange(e){
+  const sel = e.target.closest ? e.target.closest('.city-zone-select') : null;
+  if(sel){
+    const idx = parseInt(sel.getAttribute('data-city-idx'),10);
+    const courierId = (document.getElementById('active-courier-id')||{}).value;
+    handleCityZoneChange(courierId, idx, sel.value);
+    return;
+  }
+  if(e.target.id === 'ns-courier'){
+    populateCityDatalist(e.target.value);
+    updateShipmentPreview();
+    return;
+  }
+  if(e.target.id && e.target.id.indexOf('ns-')===0){
+    updateShipmentPreview();
+  }
+}
+
+function onDocInput(e){
+  if(e.target.id && e.target.id.indexOf('ns-')===0){
+    updateShipmentPreview();
+  }
+}
+
+function populateCityDatalist(courierId){
+  const dl = document.getElementById('dl-cities');
+  const courier = getCourier(courierId);
+  if(!dl || !courier) return;
+  dl.innerHTML = courier.cities.map(function(c){ return '<option value="'+esc(c.city)+'">'; }).join('');
+}
+
+/* ================= Auth handlers ================= */
+async function handleConnectServer(){
+  const urlEl = document.getElementById('cs-url');
+  const url = (urlEl.value||'').trim();
+  if(!url){ App.authError = 'Enter your server URL.'; render(); return; }
+  if(!/^https?:\/\//i.test(url)){ App.authError = 'Include https:// at the start of the URL.'; render(); return; }
+  setApiBase(url);
+  try{
+    await api('GET','/health');
+    App.authError = '';
+    render();
+  }catch(e){
+    clearApiBase();
+    App.authError = 'Could not reach that server — check the URL and try again.';
+    render();
+  }
+}
+
+async function handleSignup(){
+  const name = (document.getElementById('su-name').value||'').trim();
+  const username = (document.getElementById('su-username').value||'').trim();
+  const password = document.getElementById('su-password').value||'';
+  const password2 = document.getElementById('su-password2').value||'';
+  const vendorName = (document.getElementById('su-vendor')?document.getElementById('su-vendor').value:'').trim();
+  App.signupDraft = { name:name, username:username, vendorName:vendorName };
+
+  if(!name){ App.authError='Enter your full name.'; render(); return; }
+  if(password.length<4){ App.authError='Password must be at least 4 characters.'; render(); return; }
+  if(password!==password2){ App.authError='Passwords do not match.'; render(); return; }
+
+  try{
+    const result = await api('POST','/auth/signup', {
+      name: name, username: username, password: password, role: App.newUserRole, vendorName: vendorName
+    });
+    setToken(result.token);
+    DB.me = result.user;
+    App.authError = '';
+    App.signupDraft = null;
+    await goTo('dashboard');
+  }catch(e){
+    App.authError = e.message;
+    render();
+  }
+}
+
+async function handleSignin(){
+  const username = (document.getElementById('si-username').value||'').trim();
+  const password = document.getElementById('si-password').value||'';
+  App.signinDraft = { username: username };
+  try{
+    const result = await api('POST','/auth/login', { username: username, password: password });
+    setToken(result.token);
+    DB.me = result.user;
+    App.authError = '';
+    App.signinDraft = null;
+    await goTo('dashboard');
+  }catch(e){
+    App.authError = e.message;
+    render();
+  }
+}
+
+/* ================= Courier handlers ================= */
+async function handleAddCourier(){
+  const name = (document.getElementById('new-courier-name').value||'').trim();
+  if(!name){ showToast('Enter a courier name'); return; }
+  try{
+    const result = await api('POST','/couriers', { name: name });
+    showToast('Courier added');
+    await goTo('courier-detail', { id: result.courier.id });
+  }catch(e){ showToast(e.message); }
+}
+
+async function handleDeleteCourier(id){
+  const c = getCourier(id);
+  if(!c) return;
+  if(!confirm('Remove courier "'+c.name+'"? This cannot be undone.')) return;
+  try{
+    await api('DELETE','/couriers/'+id);
+    await goTo('couriers');
+  }catch(e){ showToast(e.message); }
+}
+
+function handleAddZone(){
+  const courierId = document.getElementById('active-courier-id').value;
+  const c = getCourier(courierId);
+  const name = (document.getElementById('new-zone-name').value||'').trim().toUpperCase();
+  if(!name){ showToast('Enter a zone name'); return; }
+  if(c.zones.indexOf(name)>=0){ showToast('Zone already exists'); return; }
+  c.zones.push(name);
+  c.zones.forEach(function(z){
+    if(!c.matrix[z]) c.matrix[z] = {};
+    c.zones.forEach(function(z2){ if(c.matrix[z][z2]==null) c.matrix[z][z2] = 0; });
+  });
+  render();
+  showToast('Zone added — click "Save zone master" to store it.');
+}
+
+async function handleSaveZoneMatrix(){
+  const courierId = document.getElementById('active-courier-id').value;
+  const c = getCourier(courierId);
+  if(!c) return;
+  const inputs = document.querySelectorAll('[data-zm-from]');
+  const matrix = {};
+  inputs.forEach(function(inp){
+    const from = inp.getAttribute('data-zm-from');
+    const to = inp.getAttribute('data-zm-to');
+    const v = parseFloat(inp.value);
+    if(!matrix[from]) matrix[from] = {};
+    matrix[from][to] = isNaN(v) ? 0 : v;
+  });
+  try{
+    await api('PUT','/couriers/'+courierId+'/zones', { zones: c.zones, matrix: matrix });
+    c.matrix = matrix;
+    showToast('Zone master saved');
+  }catch(e){ showToast(e.message); }
+}
+
+async function handleSaveRateMaster(){
+  const courierId = document.getElementById('active-courier-id').value;
+  const c = getCourier(courierId);
+  if(!c) return;
+  const keys = ['docketCharge','minChargeableWt','minChargeableAmt','volumetricDivisor','fscPercent',
+    'handlingThresholdKg','handlingPerKg','handlingMin','odaPerKg','odaMin','appointmentPerKg','appointmentMin',
+    'rovPercent','rovMin','cashHandlingPercent','cashHandlingMin','topayChargePerLR','freeStorageDays',
+    'demurragePerKg','demurrageMin','gstPercent','marginPercent','marginFlat'];
+  const overheads = {};
+  keys.forEach(function(k){
+    const el = document.getElementById('oh-'+k);
+    if(el){ const v = parseFloat(el.value); overheads[k] = isNaN(v) ? 0 : v; }
+  });
+  const riskEl = document.getElementById('oh-riskType');
+  if(riskEl) overheads.riskType = riskEl.value;
+  try{
+    await api('PUT','/couriers/'+courierId+'/rates', { overheads: overheads });
+    Object.assign(c.overheads, overheads);
+    showToast('Rate master saved');
+  }catch(e){ showToast(e.message); }
+}
+
+async function handleSaveStateZones(){
+  const courierId = document.getElementById('active-courier-id').value;
+  const c = getCourier(courierId);
+  if(!c) return;
+  const selects = document.querySelectorAll('.state-zone-select');
+  const map = {};
+  selects.forEach(function(sel){ map[sel.getAttribute('data-state-name')] = sel.value; });
+  try{
+    await api('PUT','/couriers/'+courierId+'/state-zones', { stateZoneMap: map });
+    c.stateZoneMap = map;
+    showToast('State fallback zones saved');
+  }catch(e){ showToast(e.message); }
+}
+
+async function handleAddCity(){
+  const courierId = document.getElementById('active-courier-id').value;
+  const c = getCourier(courierId);
+  const city = (document.getElementById('new-city-name').value||'').trim();
+  const state = (document.getElementById('new-city-state').value||'').trim();
+  const pin = (document.getElementById('new-city-pin').value||'').trim();
+  const zone = document.getElementById('new-city-zone').value;
+  if(!city){ showToast('Enter a city name'); return; }
+  try{
+    const result = await api('POST','/couriers/'+courierId+'/cities', { city:city, state:state, pin:pin, zone:zone });
+    c.cities = result.cities;
+    showToast('City added');
+    render();
+  }catch(e){ showToast(e.message); }
+}
+
+async function handleDeleteCity(idx){
+  const courierId = document.getElementById('active-courier-id').value;
+  const c = getCourier(courierId);
+  if(!c || !c.cities[idx]) return;
+  try{
+    await api('DELETE','/couriers/'+courierId+'/cities/'+idx);
+    c.cities.splice(idx,1);
+    render();
+  }catch(e){ showToast(e.message); }
+}
+
+async function handleCityZoneChange(courierId, idx, zone){
+  try{
+    await api('PUT','/couriers/'+courierId+'/cities/'+idx, { zone: zone });
+    const c = getCourier(courierId);
+    if(c && c.cities[idx]) c.cities[idx].zone = zone;
+    showToast('City zone updated');
+  }catch(e){ showToast(e.message); }
+}
+
+/* ================= Invoices ================= */
+async function applyInvoiceFilterFromDOM(){
+  const f = {};
+  const vEl = document.getElementById('f-vendor');
+  const cEl = document.getElementById('f-courier');
+  const tEl = document.getElementById('f-type');
+  const sEl = document.getElementById('f-status');
+  if(vEl && vEl.value) f.vendorId = vEl.value;
+  if(cEl && cEl.value) f.courierId = cEl.value;
+  if(tEl && tEl.value) f.type = tEl.value;
+  if(sEl && sEl.value) f.status = sEl.value;
+  App.invoiceFilters = f;
+  await goTo('invoices');
+}
+
+async function handleSubmitShipment(){
+  const u = currentUser();
+  if(!u || u.role!=='vendor'){ showToast('Only vendor accounts can book shipments.'); return; }
+  const f = readShipmentForm();
+  if(!f.courierId){ showToast('Select a courier'); return; }
+  if(!f.sourceCityName || !f.destCityName){ showToast('Enter pickup and destination cities.'); return; }
+  if(!f.actualWt || f.actualWt<=0){ showToast('Enter the shipment weight'); return; }
+
+  const codAmount = App.shipmentType==='B2C' ? f.codAmount : 0;
+  const topay = App.shipmentType==='B2C' ? f.topay : false;
+  const btn = document.getElementById('ns-submit-btn');
+  if(btn) btn.setAttribute('disabled','disabled');
+
+  try{
+    const result = await api('POST','/invoices', {
+      courierId: f.courierId, type: App.shipmentType, consignee: f.consignee,
+      sourceCityName: f.sourceCityName, destCityName: f.destCityName, actualWt: f.actualWt,
+      dims: { l:f.l, w:f.w, h:f.h }, isODA: f.isODA, isAppointment: f.isAppointment,
+      carrierRisk: f.carrierRisk, declaredValue: f.declaredValue, codAmount: codAmount, topay: topay
+    });
+    DB.me.walletBalance = result.walletBalance;
+    showToast('Invoice generated — '+fmt(result.invoice.total)+' billed to wallet');
+    await goTo('invoice-detail', { id: result.invoice.id });
+  }catch(e){
+    showToast(e.message);
+    if(btn) btn.removeAttribute('disabled');
+  }
+}
+
+async function handleDeleteInvoice(id){
+  if(!confirm('Delete this invoice and refund it to the vendor\'s wallet?')) return;
+  try{
+    await api('DELETE','/invoices/'+id);
+    showToast('Invoice deleted and refunded to wallet');
+    await goTo('invoices');
+  }catch(e){ showToast(e.message); }
+}
+
+/* ================= Wallet ================= */
+async function handleAdminWalletAdjust(){
+  const vendorId = document.getElementById('active-vendor-id').value;
+  const amount = parseFloat(document.getElementById('wa-amount').value);
+  const direction = document.getElementById('wa-direction').value;
+  const note = document.getElementById('wa-note').value.trim();
+  if(!amount || amount<=0){ showToast('Enter a valid amount.'); return; }
+  try{
+    await api('POST','/wallet/adjust', { vendorId: vendorId, amount: amount, direction: direction, note: note });
+    showToast('Wallet updated');
+    await goTo('vendor-wallet', { id: vendorId });
+  }catch(e){ showToast(e.message); }
+}
+
+async function handleRequestRecharge(){
+  const amount = parseFloat(document.getElementById('rr-amount').value);
+  const method = document.getElementById('rr-method').value;
+  const ref = (document.getElementById('rr-ref').value||'').trim();
+  const note = (document.getElementById('rr-note').value||'').trim();
+  if(!amount || amount<=0){ showToast('Enter the amount you paid.'); return; }
+  if(!ref){ showToast('Enter the payment reference / UTR / transaction ID.'); return; }
+  try{
+    await api('POST','/recharge-requests', { amount: amount, method: method, ref: ref, note: note });
+    showToast('Request submitted — your admin will review it shortly.');
+    await goTo('wallet');
+  }catch(e){ showToast(e.message); }
+}
+
+async function handleApproveRecharge(id){
+  const r = DB.rechargeRequests.find(function(x){ return x.id===id; });
+  if(!r) return;
+  if(!confirm('Confirm you have verified this payment ('+fmt(r.amount)+' from '+r.vendorName+', ref '+r.ref+') before crediting the wallet?')) return;
+  try{
+    await api('POST','/recharge-requests/'+id+'/approve');
+    showToast('Wallet credited');
+    await goTo('recharge-requests');
+  }catch(e){ showToast(e.message); }
+}
+
+async function handleRejectRecharge(id){
+  const reason = prompt('Reason for rejecting this request (shown to the vendor):', 'Could not verify this payment');
+  if(reason===null) return;
+  try{
+    await api('POST','/recharge-requests/'+id+'/reject', { reason: reason.trim() });
+    showToast('Request rejected');
+    await goTo('recharge-requests');
+  }catch(e){ showToast(e.message); }
+}
+
+async function handleRecharge(){
+  const u = currentUser();
+  if(!u || u.role!=='vendor') return;
+  const amt = parseFloat((document.getElementById('wr-amount')||{}).value);
+  if(!amt || amt<=0){ showToast('Enter a valid amount to recharge.'); return; }
+  if(typeof Razorpay === 'undefined'){ showToast('Payment gateway did not load — check your connection and try again.'); return; }
+  const payBtn = document.getElementById('wr-pay-btn');
+  if(payBtn) payBtn.setAttribute('disabled','disabled');
+  try{
+    const orderResult = await api('POST','/payments/create-order', { amount: amt });
+    openRazorpayForOrder(u, amt, orderResult.orderId, orderResult.keyId, payBtn);
+  }catch(e){
+    showToast('Could not start payment — '+e.message);
+    if(payBtn) payBtn.removeAttribute('disabled');
+  }
+}
+
+function openRazorpayForOrder(u, amt, orderId, keyId, payBtn){
+  const rzp = new Razorpay({
+    key: keyId,
+    order_id: orderId,
+    amount: Math.round(amt * 100),
+    currency: 'INR',
+    name: 'BCI Express',
+    description: 'Wallet recharge — Big Cart India',
+    prefill: { name: u.name },
+    theme: { color: '#C1440E' },
+    handler: function(response){
+      api('POST','/payments/verify-payment', {
+        razorpay_order_id: response.razorpay_order_id,
+        razorpay_payment_id: response.razorpay_payment_id,
+        razorpay_signature: response.razorpay_signature
+      }).then(function(result){
+        if(result.valid){
+          DB.me.walletBalance = result.balance;
+          showToast('Payment verified — '+fmt(amt)+' added to your wallet');
+        } else {
+          showToast('Payment could not be verified — wallet was not credited. Contact your admin with payment ID '+response.razorpay_payment_id+'.');
+        }
+        goTo('wallet');
+      }).catch(function(e){
+        showToast('Verification failed: '+e.message+'. Contact your admin with payment ID '+response.razorpay_payment_id+'.');
+        if(payBtn) payBtn.removeAttribute('disabled');
+      });
+    },
+    modal: {
+      ondismiss: function(){
+        showToast('Recharge cancelled');
+        if(payBtn) payBtn.removeAttribute('disabled');
+      }
+    }
+  });
+  rzp.on('payment.failed', function(resp){
+    const msg = (resp && resp.error && resp.error.description) ? resp.error.description : 'please try again.';
+    showToast('Payment failed — '+msg);
+    if(payBtn) payBtn.removeAttribute('disabled');
+  });
+  rzp.open();
+}
+
+/* ================= Notifications ================= */
+async function handleOpenNotification(id, invoiceId){
+  try{ await api('POST','/notifications/'+id+'/read'); }catch(e){}
+  const n = DB.notifications.find(function(x){ return x.id===id; });
+  if(n) n.read = true;
+  if(invoiceId){ await goTo('invoice-detail', { id: invoiceId }); }
+  else render();
+}
+
+async function handleMarkAllNotificationsRead(){
+  try{
+    await api('POST','/notifications/read-all');
+    DB.notifications.forEach(function(n){ n.read = true; });
+    render();
+  }catch(e){ showToast(e.message); }
+}
+
+function handleEnableDesktopAlerts(){
+  if(typeof Notification === 'undefined'){ showToast('Desktop alerts are not supported in this browser.'); return; }
+  Notification.requestPermission().then(function(perm){
+    showToast(perm==='granted' ? 'Desktop alerts enabled' : 'Desktop alerts were not enabled');
+    render();
+  });
+}
+function maybeNativeNotify(title, body){
+  if(typeof Notification === 'undefined') return;
+  if(Notification.permission === 'granted'){
+    try{ new Notification(title, { body: body }); }catch(e){}
+  }
+}
+
+/* ================= Background sync (admin gets live nudges from the server) ================= */
+async function pollForUpdates(){
+  const u = currentUser();
+  if(!u || u.role!=='admin' || !getApiBase()) return;
+  try{
+    const [ntf, rr] = await Promise.all([ api('GET','/notifications'), api('GET','/recharge-requests') ]);
+    const oldUnread = DB.notifications.filter(function(n){ return !n.read; });
+    const newUnread = ntf.notifications.filter(function(n){ return !n.read; });
+    if(newUnread.length > oldUnread.length){
+      const freshOnes = newUnread.slice(oldUnread.length);
+      const latest = freshOnes[freshOnes.length-1];
+      showToast(freshOnes.length===1 ? latest.message : freshOnes.length+' new notifications');
+      maybeNativeNotify(latest.title, latest.message);
+    }
+    DB.notifications = ntf.notifications;
+    DB.rechargeRequests = rr.requests;
+    patchLiveBadges();
+  }catch(e){ /* silent — try again next tick */ }
+}
+
+function patchLiveBadges(){
+  const u = currentUser();
+  if(!u) return;
+  const pendingRecharges = DB.rechargeRequests.filter(function(r){ return r.status==='Pending'; }).length;
+  const unreadNotifs = DB.notifications.filter(function(n){ return !n.read; }).length;
+  const rrNav = document.querySelector('[data-nav="recharge-requests"]');
+  if(rrNav) rrNav.innerHTML = '<span class="nav-dot"></span>Recharge Requests'+(pendingRecharges?' ('+pendingRecharges+')':'');
+  const ntfNav = document.querySelector('[data-nav="notifications"]');
+  if(ntfNav) ntfNav.innerHTML = '<span class="nav-dot"></span>Notifications'+(unreadNotifs?' ('+unreadNotifs+')':'');
+}
+
+/* ================= Init ================= */
+async function init(){
+  document.addEventListener('click', onDocClick);
+  document.addEventListener('submit', onDocSubmit);
+  document.addEventListener('change', onDocChange);
+  document.addEventListener('input', onDocInput);
+
+  if(getApiBase() && getToken()){
+    try{
+      const me = await api('GET','/auth/me');
+      DB.me = me.user;
+      await goTo('dashboard');
+      setInterval(pollForUpdates, 15000);
+      return;
+    }catch(e){
+      clearToken();
+    }
+  }
+  render();
+  setInterval(pollForUpdates, 15000);
+}
+
+init();
+
+})();
+
+</script>
+</body>
+</html>
