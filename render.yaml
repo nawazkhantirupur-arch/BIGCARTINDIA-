@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: bci-express-backend
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 20.18.0
+      - key: JWT_SECRET
+        generateValue: true
+      - key: RAZORPAY_KEY_ID
+        value: rzp_live_T0aUsyC8RsVDFL
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
